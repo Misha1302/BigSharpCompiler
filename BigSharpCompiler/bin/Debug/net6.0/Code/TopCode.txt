@@ -1,0 +1,52 @@
+void Sleep(BigFloat seconds)
+    {
+        if (seconds == 0) return;
+        if (seconds < 0)
+            throw new Exception("You can't make a cat work in the past (sleep takes values greater than zero)");
+
+        var waitUntil = ParseBigFloat(DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()) / 1000 + seconds;
+        var secondsNow = ParseBigFloat(DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()) / 1000;
+        while (secondsNow < waitUntil)
+        {
+            if (waitUntil - secondsNow > 1.1f)
+                Thread.Sleep(1000);
+            secondsNow = ParseBigFloat(DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()) / 1000;
+        }
+    }
+
+    dynamic WriteLine(dynamic obj=null)
+    {
+        switch (obj)
+        {
+            case List<dynamic> list:
+            {
+                foreach (var currentObject in list)
+                    Console.WriteLine(currentObject);
+                break;
+            }
+            case Dictionary<dynamic, dynamic> objects:
+            {
+                foreach (var currentObject in objects)
+                    Console.WriteLine(currentObject);
+                break;
+            }
+            case long l:
+            {
+                Console.WriteLine(l);
+                break;
+            }
+            default:
+            {
+                Console.WriteLine(obj ?? "");
+                break;
+            }
+        }
+
+        return obj;
+    }
+
+    bool ContainsAny(string haystack, params string[] needles)
+    {
+        return needles.Any(haystack.Contains);
+    }
+Clear();

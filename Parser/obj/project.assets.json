@@ -1,0 +1,146 @@
+{
+  "version": 3,
+  "targets": {
+    "net6.0": {
+      "BigFloat/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/BigFloat.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BigFloat.dll": {}
+        }
+      },
+      "BigFloatCalculator/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "BigFloat": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/BigFloatCalculator.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BigFloatCalculator.dll": {}
+        }
+      },
+      "Lexer/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "BigFloat": "1.0.0",
+          "Preprocessor": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Lexer.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Lexer.dll": {}
+        }
+      },
+      "Preprocessor/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/Preprocessor.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Preprocessor.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "BigFloat/1.0.0": {
+      "type": "project",
+      "path": "../BigFloat/BigFloat.csproj",
+      "msbuildProject": "../BigFloat/BigFloat.csproj"
+    },
+    "BigFloatCalculator/1.0.0": {
+      "type": "project",
+      "path": "../BigFloatCalculator/BigFloatCalculator.csproj",
+      "msbuildProject": "../BigFloatCalculator/BigFloatCalculator.csproj"
+    },
+    "Lexer/1.0.0": {
+      "type": "project",
+      "path": "../Lexer/Lexer.csproj",
+      "msbuildProject": "../Lexer/Lexer.csproj"
+    },
+    "Preprocessor/1.0.0": {
+      "type": "project",
+      "path": "../Preprocessor/Preprocessor.csproj",
+      "msbuildProject": "../Preprocessor/Preprocessor.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net6.0": [
+      "BigFloatCalculator >= 1.0.0",
+      "Lexer >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Михаил\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Parser\\Parser.csproj",
+      "projectName": "Parser",
+      "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Parser\\Parser.csproj",
+      "packagesPath": "C:\\Users\\Михаил\\.nuget\\packages\\",
+      "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Parser\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\Михаил\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net6.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "projectReferences": {
+            "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloatCalculator\\BigFloatCalculator.csproj": {
+              "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloatCalculator\\BigFloatCalculator.csproj"
+            },
+            "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Lexer\\Lexer.csproj": {
+              "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Lexer\\Lexer.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net6.0": {
+        "targetAlias": "net6.0",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

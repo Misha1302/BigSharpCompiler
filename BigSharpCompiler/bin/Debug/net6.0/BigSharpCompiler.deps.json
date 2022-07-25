@@ -1,0 +1,140 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "BigSharpCompiler/1.0.0": {
+        "dependencies": {
+          "BigFloat": "1.0.0",
+          "BigFloatRandom": "1.0.0",
+          "DotnetController": "1.0.0",
+          "FastString": "1.0.0",
+          "Lexer": "1.0.0",
+          "Parser": "1.0.0",
+          "Preprocessor": "1.0.0",
+          "XmlReaderDictionary": "1.0.0"
+        },
+        "runtime": {
+          "BigSharpCompiler.dll": {}
+        }
+      },
+      "BigFloat/1.0.0": {
+        "runtime": {
+          "BigFloat.dll": {}
+        }
+      },
+      "BigFloatCalculator/1.0.0": {
+        "dependencies": {
+          "BigFloat": "1.0.0"
+        },
+        "runtime": {
+          "BigFloatCalculator.dll": {}
+        }
+      },
+      "BigFloatRandom/1.0.0": {
+        "dependencies": {
+          "BigFloat": "1.0.0"
+        },
+        "runtime": {
+          "BigFloatRandom.dll": {}
+        }
+      },
+      "DotnetController/1.0.0": {
+        "runtime": {
+          "DotnetController.dll": {}
+        }
+      },
+      "FastString/1.0.0": {
+        "dependencies": {
+          "BigFloat": "1.0.0"
+        },
+        "runtime": {
+          "FastString.dll": {}
+        }
+      },
+      "Lexer/1.0.0": {
+        "dependencies": {
+          "BigFloat": "1.0.0",
+          "Preprocessor": "1.0.0"
+        },
+        "runtime": {
+          "Lexer.dll": {}
+        }
+      },
+      "Parser/1.0.0": {
+        "dependencies": {
+          "BigFloatCalculator": "1.0.0",
+          "Lexer": "1.0.0"
+        },
+        "runtime": {
+          "Parser.dll": {}
+        }
+      },
+      "Preprocessor/1.0.0": {
+        "runtime": {
+          "Preprocessor.dll": {}
+        }
+      },
+      "XmlReaderDictionary/1.0.0": {
+        "runtime": {
+          "XmlReaderDictionary.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "BigSharpCompiler/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "BigFloat/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "BigFloatCalculator/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "BigFloatRandom/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DotnetController/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "FastString/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Lexer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Parser/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Preprocessor/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "XmlReaderDictionary/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

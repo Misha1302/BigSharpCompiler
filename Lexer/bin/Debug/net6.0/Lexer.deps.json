@@ -1,0 +1,47 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "Lexer/1.0.0": {
+        "dependencies": {
+          "BigFloat": "1.0.0",
+          "Preprocessor": "1.0.0"
+        },
+        "runtime": {
+          "Lexer.dll": {}
+        }
+      },
+      "BigFloat/1.0.0": {
+        "runtime": {
+          "BigFloat.dll": {}
+        }
+      },
+      "Preprocessor/1.0.0": {
+        "runtime": {
+          "Preprocessor.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Lexer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "BigFloat/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Preprocessor/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,0 +1,15 @@
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\bin\Debug\net6.0\FastString.deps.json
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\bin\Debug\net6.0\FastString.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\bin\Debug\net6.0\FastString.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\obj\Debug\net6.0\FastString.csproj.AssemblyReference.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\obj\Debug\net6.0\FastString.GeneratedMSBuildEditorConfig.editorconfig
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\obj\Debug\net6.0\FastString.AssemblyInfoInputs.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\obj\Debug\net6.0\FastString.AssemblyInfo.cs
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\obj\Debug\net6.0\FastString.csproj.CoreCompileInputs.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\obj\Debug\net6.0\FastString.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\obj\Debug\net6.0\refint\FastString.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\obj\Debug\net6.0\FastString.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\obj\Debug\net6.0\ref\FastString.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\bin\Debug\net6.0\BigFloat.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\bin\Debug\net6.0\BigFloat.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\FastString\obj\Debug\net6.0\FastString.csproj.CopyComplete

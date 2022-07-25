@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BigFloatRandom\BigFloatRandom.csproj" />
+        <ProjectReference Include="..\BigFloat\BigFloat.csproj" />
+        <ProjectReference Include="..\DotnetController\DotnetController.csproj" />
+        <ProjectReference Include="..\FastString\FastString.csproj" />
+        <ProjectReference Include="..\Lexer\Lexer.csproj" />
+        <ProjectReference Include="..\Parser\Parser.csproj" />
+        <ProjectReference Include="..\Preprocessor\Preprocessor.csproj" />
+        <ProjectReference Include="..\XmlReaderDictionary\XmlReaderDictionary.csproj" />
+    </ItemGroup>
+
+</Project>

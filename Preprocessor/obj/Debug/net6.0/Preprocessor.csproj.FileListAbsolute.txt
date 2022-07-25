@@ -1,0 +1,12 @@
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\Preprocessor\bin\Debug\net6.0\Preprocessor.deps.json
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\Preprocessor\bin\Debug\net6.0\Preprocessor.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\Preprocessor\bin\Debug\net6.0\Preprocessor.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\Preprocessor\obj\Debug\net6.0\Preprocessor.csproj.AssemblyReference.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\Preprocessor\obj\Debug\net6.0\Preprocessor.GeneratedMSBuildEditorConfig.editorconfig
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\Preprocessor\obj\Debug\net6.0\Preprocessor.AssemblyInfoInputs.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\Preprocessor\obj\Debug\net6.0\Preprocessor.AssemblyInfo.cs
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\Preprocessor\obj\Debug\net6.0\Preprocessor.csproj.CoreCompileInputs.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\Preprocessor\obj\Debug\net6.0\Preprocessor.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\Preprocessor\obj\Debug\net6.0\refint\Preprocessor.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\Preprocessor\obj\Debug\net6.0\Preprocessor.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\Preprocessor\obj\Debug\net6.0\ref\Preprocessor.dll

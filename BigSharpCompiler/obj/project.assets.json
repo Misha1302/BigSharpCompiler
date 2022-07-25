@@ -1,0 +1,255 @@
+{
+  "version": 3,
+  "targets": {
+    "net6.0": {
+      "BigFloat/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/BigFloat.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BigFloat.dll": {}
+        }
+      },
+      "BigFloatCalculator/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "BigFloat": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/BigFloatCalculator.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BigFloatCalculator.dll": {}
+        }
+      },
+      "BigFloatRandom/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "BigFloat": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/BigFloatRandom.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BigFloatRandom.dll": {}
+        }
+      },
+      "DotnetController/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/DotnetController.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DotnetController.dll": {}
+        }
+      },
+      "FastString/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "BigFloat": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/FastString.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/FastString.dll": {}
+        }
+      },
+      "Lexer/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "BigFloat": "1.0.0",
+          "Preprocessor": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Lexer.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Lexer.dll": {}
+        }
+      },
+      "Parser/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "BigFloatCalculator": "1.0.0",
+          "Lexer": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Parser.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Parser.dll": {}
+        }
+      },
+      "Preprocessor/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/Preprocessor.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Preprocessor.dll": {}
+        }
+      },
+      "XmlReaderDictionary/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/XmlReaderDictionary.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/XmlReaderDictionary.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "BigFloat/1.0.0": {
+      "type": "project",
+      "path": "../BigFloat/BigFloat.csproj",
+      "msbuildProject": "../BigFloat/BigFloat.csproj"
+    },
+    "BigFloatCalculator/1.0.0": {
+      "type": "project",
+      "path": "../BigFloatCalculator/BigFloatCalculator.csproj",
+      "msbuildProject": "../BigFloatCalculator/BigFloatCalculator.csproj"
+    },
+    "BigFloatRandom/1.0.0": {
+      "type": "project",
+      "path": "../BigFloatRandom/BigFloatRandom.csproj",
+      "msbuildProject": "../BigFloatRandom/BigFloatRandom.csproj"
+    },
+    "DotnetController/1.0.0": {
+      "type": "project",
+      "path": "../DotnetController/DotnetController.csproj",
+      "msbuildProject": "../DotnetController/DotnetController.csproj"
+    },
+    "FastString/1.0.0": {
+      "type": "project",
+      "path": "../FastString/FastString.csproj",
+      "msbuildProject": "../FastString/FastString.csproj"
+    },
+    "Lexer/1.0.0": {
+      "type": "project",
+      "path": "../Lexer/Lexer.csproj",
+      "msbuildProject": "../Lexer/Lexer.csproj"
+    },
+    "Parser/1.0.0": {
+      "type": "project",
+      "path": "../Parser/Parser.csproj",
+      "msbuildProject": "../Parser/Parser.csproj"
+    },
+    "Preprocessor/1.0.0": {
+      "type": "project",
+      "path": "../Preprocessor/Preprocessor.csproj",
+      "msbuildProject": "../Preprocessor/Preprocessor.csproj"
+    },
+    "XmlReaderDictionary/1.0.0": {
+      "type": "project",
+      "path": "../XmlReaderDictionary/XmlReaderDictionary.csproj",
+      "msbuildProject": "../XmlReaderDictionary/XmlReaderDictionary.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net6.0": [
+      "BigFloat >= 1.0.0",
+      "BigFloatRandom >= 1.0.0",
+      "DotnetController >= 1.0.0",
+      "FastString >= 1.0.0",
+      "Lexer >= 1.0.0",
+      "Parser >= 1.0.0",
+      "Preprocessor >= 1.0.0",
+      "XmlReaderDictionary >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Михаил\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigSharpCompiler.csproj",
+      "projectName": "BigSharpCompiler",
+      "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigSharpCompiler.csproj",
+      "packagesPath": "C:\\Users\\Михаил\\.nuget\\packages\\",
+      "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\Михаил\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net6.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "projectReferences": {
+            "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloatRandom\\BigFloatRandom.csproj": {
+              "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloatRandom\\BigFloatRandom.csproj"
+            },
+            "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloat\\BigFloat.csproj": {
+              "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloat\\BigFloat.csproj"
+            },
+            "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\DotnetController\\DotnetController.csproj": {
+              "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\DotnetController\\DotnetController.csproj"
+            },
+            "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\FastString\\FastString.csproj": {
+              "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\FastString\\FastString.csproj"
+            },
+            "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Lexer\\Lexer.csproj": {
+              "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Lexer\\Lexer.csproj"
+            },
+            "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Parser\\Parser.csproj": {
+              "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Parser\\Parser.csproj"
+            },
+            "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj": {
+              "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj"
+            },
+            "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj": {
+              "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net6.0": {
+        "targetAlias": "net6.0",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

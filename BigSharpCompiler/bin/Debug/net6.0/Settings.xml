@@ -1,0 +1,5 @@
+<settings>
+	<autoStart>True</autoStart>
+	<bigSharpCodePath>\Code\BigSharpCode.bsc</bigSharpCodePath>
+	<saveCompiledCodePath>E:\BigSharpProjects\Test1</saveCompiledCodePath>
+</settings>

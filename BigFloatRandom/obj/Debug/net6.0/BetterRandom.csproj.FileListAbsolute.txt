@@ -1,0 +1,15 @@
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\bin\Debug\net6.0\BetterRandom.deps.json
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\bin\Debug\net6.0\BetterRandom.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\bin\Debug\net6.0\BetterRandom.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\obj\Debug\net6.0\BetterRandom.csproj.AssemblyReference.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\obj\Debug\net6.0\BetterRandom.GeneratedMSBuildEditorConfig.editorconfig
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\obj\Debug\net6.0\BetterRandom.AssemblyInfoInputs.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\obj\Debug\net6.0\BetterRandom.AssemblyInfo.cs
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\obj\Debug\net6.0\BetterRandom.csproj.CoreCompileInputs.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\obj\Debug\net6.0\BetterRandom.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\obj\Debug\net6.0\refint\BetterRandom.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\obj\Debug\net6.0\BetterRandom.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\obj\Debug\net6.0\ref\BetterRandom.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\bin\Debug\net6.0\BigFloat.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\bin\Debug\net6.0\BigFloat.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BetterRandom\obj\Debug\net6.0\BetterRandom.csproj.CopyComplete

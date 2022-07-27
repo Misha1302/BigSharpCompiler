@@ -10,3 +10,15 @@ D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigFloat\obj\D
 D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigFloat\obj\Debug\net6.0\refint\BigFloat.dll
 D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigFloat\obj\Debug\net6.0\BigFloat.pdb
 D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigFloat\obj\Debug\net6.0\ref\BigFloat.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\BigFloat\bin\Debug\net6.0\BigFloat.deps.json
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\BigFloat\bin\Debug\net6.0\BigFloat.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\BigFloat\bin\Debug\net6.0\BigFloat.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\BigFloat\obj\Debug\net6.0\BigFloat.csproj.AssemblyReference.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\BigFloat\obj\Debug\net6.0\BigFloat.GeneratedMSBuildEditorConfig.editorconfig
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\BigFloat\obj\Debug\net6.0\BigFloat.AssemblyInfoInputs.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\BigFloat\obj\Debug\net6.0\BigFloat.AssemblyInfo.cs
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\BigFloat\obj\Debug\net6.0\BigFloat.csproj.CoreCompileInputs.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\BigFloat\obj\Debug\net6.0\BigFloat.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\BigFloat\obj\Debug\net6.0\refint\BigFloat.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\BigFloat\obj\Debug\net6.0\BigFloat.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\BigFloat\obj\Debug\net6.0\ref\BigFloat.dll

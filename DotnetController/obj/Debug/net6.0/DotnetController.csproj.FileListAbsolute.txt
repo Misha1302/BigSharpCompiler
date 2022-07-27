@@ -10,3 +10,15 @@ D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\DotnetControll
 D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\DotnetController\obj\Debug\net6.0\refint\DotnetController.dll
 D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\DotnetController\obj\Debug\net6.0\DotnetController.pdb
 D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\DotnetController\obj\Debug\net6.0\ref\DotnetController.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\DotnetController\bin\Debug\net6.0\DotnetController.deps.json
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\DotnetController\bin\Debug\net6.0\DotnetController.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\DotnetController\bin\Debug\net6.0\DotnetController.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\DotnetController\obj\Debug\net6.0\DotnetController.csproj.AssemblyReference.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\DotnetController\obj\Debug\net6.0\DotnetController.GeneratedMSBuildEditorConfig.editorconfig
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\DotnetController\obj\Debug\net6.0\DotnetController.AssemblyInfoInputs.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\DotnetController\obj\Debug\net6.0\DotnetController.AssemblyInfo.cs
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\DotnetController\obj\Debug\net6.0\DotnetController.csproj.CoreCompileInputs.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\DotnetController\obj\Debug\net6.0\DotnetController.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\DotnetController\obj\Debug\net6.0\refint\DotnetController.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\DotnetController\obj\Debug\net6.0\DotnetController.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\DotnetController\obj\Debug\net6.0\ref\DotnetController.dll

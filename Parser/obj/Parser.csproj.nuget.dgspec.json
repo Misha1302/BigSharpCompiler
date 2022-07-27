@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Parser\\Parser.csproj": {}
+    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Parser\\Parser.csproj": {}
   },
   "projects": {
-    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloatCalculator\\BigFloatCalculator.csproj": {
+    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloatCalculator\\BigFloatCalculator.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloatCalculator\\BigFloatCalculator.csproj",
+        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloatCalculator\\BigFloatCalculator.csproj",
         "projectName": "BigFloatCalculator",
-        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloatCalculator\\BigFloatCalculator.csproj",
+        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloatCalculator\\BigFloatCalculator.csproj",
         "packagesPath": "C:\\Users\\Михаил\\.nuget\\packages\\",
-        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloatCalculator\\obj\\",
+        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloatCalculator\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Михаил\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -28,8 +28,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloat\\BigFloat.csproj": {
-                "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloat\\BigFloat.csproj"
+              "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloat\\BigFloat.csproj": {
+                "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloat\\BigFloat.csproj"
               }
             }
           }
@@ -62,14 +62,14 @@
         }
       }
     },
-    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloat\\BigFloat.csproj": {
+    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloat\\BigFloat.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloat\\BigFloat.csproj",
+        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloat\\BigFloat.csproj",
         "projectName": "BigFloat",
-        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloat\\BigFloat.csproj",
+        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloat\\BigFloat.csproj",
         "packagesPath": "C:\\Users\\Михаил\\.nuget\\packages\\",
-        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloat\\obj\\",
+        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloat\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Михаил\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -116,14 +116,14 @@
         }
       }
     },
-    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Lexer\\Lexer.csproj": {
+    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Lexer\\Lexer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Lexer\\Lexer.csproj",
+        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Lexer\\Lexer.csproj",
         "projectName": "Lexer",
-        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Lexer\\Lexer.csproj",
+        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Lexer\\Lexer.csproj",
         "packagesPath": "C:\\Users\\Михаил\\.nuget\\packages\\",
-        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Lexer\\obj\\",
+        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Lexer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Михаил\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -140,11 +140,11 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloat\\BigFloat.csproj": {
-                "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloat\\BigFloat.csproj"
+              "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloat\\BigFloat.csproj": {
+                "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloat\\BigFloat.csproj"
               },
-              "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj": {
-                "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj"
+              "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj": {
+                "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj"
               }
             }
           }
@@ -177,14 +177,14 @@
         }
       }
     },
-    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Parser\\Parser.csproj": {
+    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Parser\\Parser.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Parser\\Parser.csproj",
+        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Parser\\Parser.csproj",
         "projectName": "Parser",
-        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Parser\\Parser.csproj",
+        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Parser\\Parser.csproj",
         "packagesPath": "C:\\Users\\Михаил\\.nuget\\packages\\",
-        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Parser\\obj\\",
+        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Parser\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Михаил\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -201,11 +201,11 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloatCalculator\\BigFloatCalculator.csproj": {
-                "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigFloatCalculator\\BigFloatCalculator.csproj"
+              "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloatCalculator\\BigFloatCalculator.csproj": {
+                "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigFloatCalculator\\BigFloatCalculator.csproj"
               },
-              "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Lexer\\Lexer.csproj": {
-                "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Lexer\\Lexer.csproj"
+              "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Lexer\\Lexer.csproj": {
+                "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Lexer\\Lexer.csproj"
               }
             }
           }
@@ -238,14 +238,14 @@
         }
       }
     },
-    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj": {
+    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj",
+        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj",
         "projectName": "Preprocessor",
-        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj",
+        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj",
         "packagesPath": "C:\\Users\\Михаил\\.nuget\\packages\\",
-        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Preprocessor\\obj\\",
+        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Preprocessor\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Михаил\\AppData\\Roaming\\NuGet\\NuGet.Config",

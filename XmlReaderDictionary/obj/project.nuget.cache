@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3clZCUn+PgaPX713HTlG+7ucnDePNDsoQPHDmpvCjCw0WEa/wlytj+e13KQVGZbE5hLARYE9/ZMt7RBaW+3GJw==",
+  "dgSpecHash": "0akZC5RGSbUGbG/wBGhx1gKsx7XpE+LHxDNKSWvAP77NKJeqQppefQjwdQEKYTwljbpp1JqwZxVHCvuvNxqtNA==",
   "success": true,
-  "projectFilePath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj",
+  "projectFilePath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

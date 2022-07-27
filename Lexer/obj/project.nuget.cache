@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "F+r6aKP759l2+twpjQa1MPGJdx4m1jYlImxzaZHoKbiPawBlFiwo12zjv+fWQweXDEeLjDUamL7V7WHeSCE0XA==",
+  "dgSpecHash": "rLTlZ6vZezBmZL6cELN3EGWEAdGc5LGcR6TanvS2Q7Qvrdah+svyHh2Kor0EzMBjKxqTXsiE5ZNUvOGgYYILrQ==",
   "success": true,
-  "projectFilePath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Lexer\\Lexer.csproj",
+  "projectFilePath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Lexer\\Lexer.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

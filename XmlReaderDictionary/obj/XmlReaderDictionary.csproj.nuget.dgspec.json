@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj": {}
+    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj": {}
   },
   "projects": {
-    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj": {
+    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj",
+        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj",
         "projectName": "XmlReaderDictionary",
-        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj",
+        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj",
         "packagesPath": "C:\\Users\\Михаил\\.nuget\\packages\\",
-        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\XmlReaderDictionary\\obj\\",
+        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\XmlReaderDictionary\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Михаил\\AppData\\Roaming\\NuGet\\NuGet.Config",

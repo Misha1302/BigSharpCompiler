@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "zxz2IIm49SCKVbSnPIWE8dg5nQOmMY3cPhF19jxvuLqUaaOJPR0bY+W+zWNMO3ZUV/I2pwq8aTsuVN3xJtafbw==",
+  "dgSpecHash": "bfsiHURdUk/2Q6eqr9Fa4iYDJGnDivTYYD1LonQ927xt0jWfsAXTVBbITksv/rn9SBx2JFGOyTWWoAI6u+ZNYQ==",
   "success": true,
-  "projectFilePath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\FastString\\FastString.csproj",
+  "projectFilePath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\FastString\\FastString.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

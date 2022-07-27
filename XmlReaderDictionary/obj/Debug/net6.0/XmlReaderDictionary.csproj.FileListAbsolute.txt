@@ -10,3 +10,15 @@ D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\XmlReaderDicti
 D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\XmlReaderDictionary\obj\Debug\net6.0\refint\XmlReaderDictionary.dll
 D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\XmlReaderDictionary\obj\Debug\net6.0\XmlReaderDictionary.pdb
 D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\XmlReaderDictionary\obj\Debug\net6.0\ref\XmlReaderDictionary.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\XmlReaderDictionary\bin\Debug\net6.0\XmlReaderDictionary.deps.json
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\XmlReaderDictionary\bin\Debug\net6.0\XmlReaderDictionary.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\XmlReaderDictionary\bin\Debug\net6.0\XmlReaderDictionary.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\XmlReaderDictionary\obj\Debug\net6.0\XmlReaderDictionary.csproj.AssemblyReference.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\XmlReaderDictionary\obj\Debug\net6.0\XmlReaderDictionary.GeneratedMSBuildEditorConfig.editorconfig
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\XmlReaderDictionary\obj\Debug\net6.0\XmlReaderDictionary.AssemblyInfoInputs.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\XmlReaderDictionary\obj\Debug\net6.0\XmlReaderDictionary.AssemblyInfo.cs
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\XmlReaderDictionary\obj\Debug\net6.0\XmlReaderDictionary.csproj.CoreCompileInputs.cache
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\XmlReaderDictionary\obj\Debug\net6.0\XmlReaderDictionary.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\XmlReaderDictionary\obj\Debug\net6.0\refint\XmlReaderDictionary.dll
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\XmlReaderDictionary\obj\Debug\net6.0\XmlReaderDictionary.pdb
+D:\DRIVE\Programming\ProgrammingLanguages\CSharp\BigSharpCompiler\BigSharpCompiler\XmlReaderDictionary\obj\Debug\net6.0\ref\XmlReaderDictionary.dll

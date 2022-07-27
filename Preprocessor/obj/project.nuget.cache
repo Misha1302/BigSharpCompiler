@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "go32W9aVjQRyRXcK2PbWMH6y4CUshsxGiLm9CexRqiaBgjSp6L0iSywot+uEgjXodYAmvLabEFFaQfzUp+ma1g==",
+  "dgSpecHash": "5GKenqxqIPuWK8kaMAAh7YZBeRlft96iv8hayKImd4GdccyeYohrlBJ8DN7hwwjAv3w1k/gxuZiS6SWrCTakQg==",
   "success": true,
-  "projectFilePath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj",
+  "projectFilePath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

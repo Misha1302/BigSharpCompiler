@@ -52,19 +52,36 @@ public static class Parser
 
     private static List<Token> OffsetArray(List<Token> tokens)
     {
-        for (var i = 1; i < tokens.Count - 1; i++)
+        for (var i = 2; i < tokens.Count - 1; i++)
+        {
+            var maybeDict = tokens[i - 2];
             if (tokens[i - 1].Kind == Kind.OpenSquareBracket && tokens[i].Kind == Kind.Number &&
                 tokens[i + 1].Kind == Kind.CloseSquareBracket)
             {
-                tokens.Insert(i, new Token("Convert", Kind.Convert));
-                tokens.Insert(i + 1, new Token(".", Kind.Comma));
-                tokens.Insert(i + 2, new Token("ToInt32", Kind.ToInt));
-                tokens.Insert(i + 3, new Token("(", Kind.OpenParentheses));
+                tokens.Insert(i, maybeDict);
+                tokens.Insert(i+1, new Token(" ", Kind.Whitespace));
+                tokens.Insert(i + 2, new Token("is", Kind.Is));
+                tokens.Insert(i + 3, new Token(" ", Kind.Whitespace));
+                tokens.Insert(i + 4, new Token("Dictionary", Kind.Dictionary));
+                tokens.Insert(i + 5, new Token("<", Kind.OpenAngleBracket));
+                tokens.Insert(i + 6, new Token("dynamic", Kind.Dynamic));
+                tokens.Insert(i + 7, new Token(",", Kind.Comma));
+                tokens.Insert(i + 8, new Token("dynamic", Kind.Dynamic));
+                tokens.Insert(i + 9, new Token(">", Kind.CloseBracket));
+                tokens.Insert(i + 10, new Token(" ", Kind.Whitespace));
+                tokens.Insert(i + 11, new Token("?", Kind.Question));
+                tokens.Insert(i + 12, new Token(" ", Kind.Whitespace));
 
-                tokens.Insert(i + 5, new Token(")", Kind.CloseParentheses));
-                tokens.Insert(i + 6, new Token("-", Kind.MathOperand));
-                tokens.Insert(i + 7, new Token("1", Kind.Int, value: 1));
+                // number
+
+                tokens.Insert(i + 14, new Token(" ", Kind.Whitespace));
+                tokens.Insert(i + 15, new Token(":", Kind.Colon));
+                tokens.Insert(i + 16, new Token(" ", Kind.Whitespace));
+
+                tokens.Insert(i + 17, new Token(tokens[i+13].Text, Kind.Int));
+                i += 17;
             }
+        }
 
         return tokens;
     }
@@ -174,45 +191,45 @@ public static class Parser
 
                 i--;
                 arrayTokensList.Reverse();
-                
+
                 foreach (var arrayToken in arrayTokensList) tokens.Insert(i, arrayToken);
                 i += arrayTokensList.Count - 1;
-                tokens.Insert(i+1, new Token(" ", Kind.Whitespace));
-                tokens.Insert(i+2, new Token("is", Kind.Is));
-                tokens.Insert(i+3, new Token(" ", Kind.Whitespace));
-                tokens.Insert(i+4, new Token("Dictionary", Kind.Dictionary));
-                tokens.Insert(i+5, new Token("<", Kind.OpenAngleBracket));
-                tokens.Insert(i+6, new Token("dynamic", Kind.Dynamic));
-                tokens.Insert(i+7, new Token(",", Kind.Comma));
-                tokens.Insert(i+8, new Token("dynamic", Kind.Dynamic));
-                tokens.Insert(i+9, new Token(">", Kind.OpenAngleBracket));
-                tokens.Insert(i+10, new Token(" ", Kind.Whitespace));
-                tokens.Insert(i+11, new Token("?", Kind.Question));
-                tokens.Insert(i+12, new Token(" ", Kind.Whitespace));
-                
-                foreach (var arrayToken in arrayTokensList) tokens.Insert(i+13, arrayToken);
+                tokens.Insert(i + 1, new Token(" ", Kind.Whitespace));
+                tokens.Insert(i + 2, new Token("is", Kind.Is));
+                tokens.Insert(i + 3, new Token(" ", Kind.Whitespace));
+                tokens.Insert(i + 4, new Token("Dictionary", Kind.Dictionary));
+                tokens.Insert(i + 5, new Token("<", Kind.OpenAngleBracket));
+                tokens.Insert(i + 6, new Token("dynamic", Kind.Dynamic));
+                tokens.Insert(i + 7, new Token(",", Kind.Comma));
+                tokens.Insert(i + 8, new Token("dynamic", Kind.Dynamic));
+                tokens.Insert(i + 9, new Token(">", Kind.OpenAngleBracket));
+                tokens.Insert(i + 10, new Token(" ", Kind.Whitespace));
+                tokens.Insert(i + 11, new Token("?", Kind.Question));
+                tokens.Insert(i + 12, new Token(" ", Kind.Whitespace));
+
+                foreach (var arrayToken in arrayTokensList) tokens.Insert(i + 13, arrayToken);
                 i += arrayTokensList.Count - 1;
-                
-                tokens.Insert(i+14, new Token(".", Kind.Comma));
-                tokens.Insert(i+15, new Token("ContainsKey", Kind.ContainsKey));
-                tokens.Insert(i+16, new Token("(", Kind.OpenParentheses));
-                
+
+                tokens.Insert(i + 14, new Token(".", Kind.Comma));
+                tokens.Insert(i + 15, new Token("ContainsKey", Kind.ContainsKey));
+                tokens.Insert(i + 16, new Token("(", Kind.OpenParentheses));
+
                 foreach (var containsToken in containsTokens) tokens.Insert(i + 17, containsToken);
                 i += containsTokens.Count - 1;
-                
-                tokens.Insert(i+18, new Token(")", Kind.CloseParentheses));
-                tokens.Insert(i+19, new Token(" ", Kind.Whitespace));
-                tokens.Insert(i+20, new Token(":", Kind.Colon));
-                tokens.Insert(i+21, new Token(" ", Kind.Whitespace));
+
+                tokens.Insert(i + 18, new Token(")", Kind.CloseParentheses));
+                tokens.Insert(i + 19, new Token(" ", Kind.Whitespace));
+                tokens.Insert(i + 20, new Token(":", Kind.Colon));
+                tokens.Insert(i + 21, new Token(" ", Kind.Whitespace));
 
                 i += 21;
-                
+
                 if (arrayTokensList.Count != 1)
                 {
                     tokens.Insert(i, new Token("Enumerable", Kind.Enumerable));
-                    tokens.Insert(i+1, new Token(".", Kind.Dot));
-                    tokens.Insert(i+2, new Token("Contains", Kind.Contains));
-                    tokens.Insert(i+3, new Token("(", Kind.OpenParentheses));
+                    tokens.Insert(i + 1, new Token(".", Kind.Dot));
+                    tokens.Insert(i + 2, new Token("Contains", Kind.Contains));
+                    tokens.Insert(i + 3, new Token("(", Kind.OpenParentheses));
 
                     i += 3;
 
@@ -221,16 +238,16 @@ public static class Parser
                     tokens.Insert(i + 3, new Token("dynamic", Kind.Dynamic));
                     tokens.Insert(i + 4, new Token("[", Kind.OpenSquareBracket));
                     tokens.Insert(i + 5, new Token("]", Kind.CloseSquareBracket));
-                    
+
                     foreach (var arrayToken in arrayTokensList) tokens.Insert(i + 6, arrayToken);
                     i += arrayTokensList.Count;
-                    
+
                     tokens.Insert(i + 7, new Token(",", Kind.Comma));
                     tokens.Insert(i + 8, new Token("(", Kind.OpenParentheses));
 
                     foreach (var containsToken in containsTokens) tokens.Insert(i + 9, containsToken);
                     i += containsTokens.Count - 1;
-                    
+
                     tokens.Insert(i + 10, new Token(")", Kind.CloseParentheses));
                     tokens.Insert(i + 11, new Token(")", Kind.CloseParentheses));
                     i += 12;
@@ -312,7 +329,8 @@ public static class Parser
     private static List<Token> SupplementWriteLine(List<Token> tokens)
     {
         for (var i = 2; i < tokens.Count; i++)
-            if (tokens[i - 2].Kind != Kind.Console && tokens[i - 1].Kind == Kind.Dot && tokens[i].Kind == Kind.WriteLine)
+            if (tokens[i - 2].Kind != Kind.Console && tokens[i - 1].Kind == Kind.Dot &&
+                tokens[i].Kind == Kind.WriteLine)
             {
                 tokens.Insert(i - 1, new Token('.', Kind.Comma));
                 tokens.Insert(i, new Token("ToString", Kind.ToString));
@@ -322,7 +340,8 @@ public static class Parser
             }
 
         for (var i = 2; i < tokens.Count; i++)
-            if (tokens[i - 2].Kind != Kind.Console && tokens[i - 1].Kind == Kind.Dot && tokens[i].Kind == Kind.WriteLine)
+            if (tokens[i - 2].Kind != Kind.Console && tokens[i - 1].Kind == Kind.Dot &&
+                tokens[i].Kind == Kind.WriteLine)
             {
                 tokens.Insert(i - 2, new Token(')', Kind.CloseParentheses));
                 i -= 4;

@@ -46,6 +46,7 @@ public static class BigSharpCompiler
         {
             var token = tokens[i];
             if (token.Own == Own.Command)
+            {
                 switch (token.Kind)
                 {
                     case Kind.CSharp:
@@ -61,13 +62,20 @@ public static class BigSharpCompiler
 
                         break;
                     default:
+                        if (token.Kind == Kind.Unknown) throw new Exception($"Unknown token: {token.Text}");
                         code.Append(token.Text);
                         break;
                 }
+            }
             else if (token.Kind == Kind.Number)
-                code.Append($"ParseBigFloat(\"{token.Value}\")");
+            {
+                code.Append($"ParseBigFloat(\"{token.Text}\")");
+            }
             else
+            {
+                if (token.Kind == Kind.Unknown) throw new Exception($"Unknown token: {token.Text}");
                 code.Append(token.Text);
+            }
         }
 
         code.Append(File.ReadAllText(@"Code\BottomCode.txt"));

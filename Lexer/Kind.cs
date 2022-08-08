@@ -1,7 +1,6 @@
 namespace Lexer;
 
-// if the number of types in enum becomes more than 255, then change byte to int (or remove it altogether)
-public enum Kind : sbyte
+public enum Kind
 {
     Dynamic,
     WriteLine,
@@ -57,5 +56,7 @@ public enum Kind : sbyte
     Is,
     Dictionary,
     Question,
-    ContainsKey
+    ContainsKey,
+    Call,
+    NewVoid
 }

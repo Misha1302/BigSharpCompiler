@@ -1,6 +1,4 @@
-var a = dict {{3, 5}, {2, 4}}
-var b = 3
-WriteLine(b in a)
-var c = a[2]
-c = c ^ 100
-WriteLine(c)
+void Foo(){
+var q = 0
+}
+WriteLine(call Foo())

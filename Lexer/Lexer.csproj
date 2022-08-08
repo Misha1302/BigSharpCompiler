@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BigFloat\BigFloat.csproj"/>
-        <ProjectReference Include="..\Preprocessor\Preprocessor.csproj"/>
+        <ProjectReference Include="..\BigFloat\BigFloat.csproj" />
+        <ProjectReference Include="..\Preprocessor\Preprocessor.csproj" />
     </ItemGroup>
 
 </Project>

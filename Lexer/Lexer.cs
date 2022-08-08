@@ -28,7 +28,7 @@ public static class Lexer
         { "CSharp", Kind.CSharp },
         { "Contains", Kind.Contains }
     };
-    
+
     private static readonly IReadOnlyDictionary<string, Kind> Operators = new Dictionary<string, Kind>
     {
         { "in", Kind.In },
@@ -38,6 +38,7 @@ public static class Lexer
 
     private static readonly IReadOnlyDictionary<string, Kind> Words = new Dictionary<string, Kind>
     {
+        { "call", Kind.Call },
         { "goto", Kind.Goto },
         { "break", Kind.Break },
         { "continue", Kind.Continue },
@@ -52,7 +53,7 @@ public static class Lexer
 
     private static readonly IReadOnlyDictionary<string, Kind> DataTypes = new Dictionary<string, Kind>
     {
-        { "void", Kind.Void },
+        { "void", Kind.NewVoid },
         { "dynamic", Kind.Dynamic },
         { "freeze", Kind.Freeze },
         { "Dictionary", Kind.Dictionary }
@@ -174,7 +175,7 @@ public static class Lexer
             // { - Bracket
             // [ - SquareBracket
             // < - AngleBracket
-            
+
             case '(':
                 _position++;
                 return new Token(currentChar, Kind.OpenParentheses);
@@ -237,7 +238,7 @@ public static class Lexer
             {
                 if (_position >= _codeText.Length) break;
                 currentChar = _codeText[_position];
-                
+
                 switch (currentChar)
                 {
                     case '_':

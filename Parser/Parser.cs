@@ -5,6 +5,8 @@ namespace Parser;
 
 public static class Parser
 {
+    private static Dependence? _currentDependence = new("MainClass", DependenceEnum.Class);
+
     public static List<Token> SplitIntoTokens(string code, bool optimized = true, bool checks = true,
         bool supplement = true, bool replace = true, bool offsetArray = true)
     {
@@ -17,13 +19,38 @@ public static class Parser
         if (supplement) tokens = SupplementTokens(tokens);
         if (offsetArray) tokens = OffsetArray(tokens);
         if (offsetArray) tokens = FixSemicolon(tokens);
+        tokens = AddDependence(tokens);
+        return tokens;
+    }
+
+    private static List<Token> AddDependence(List<Token> tokens)
+    {
+        for (var i = 0; i < tokens.Count; i++)
+        {
+            switch (tokens[i].Kind)
+            {
+                case Kind.NewVoid:
+                    _currentDependence = new Dependence(tokens[i + 2].Text, DependenceEnum.Void, _currentDependence);
+                    break;
+                case Kind.Dynamic when tokens[i + 2].Kind == Kind.Method:
+                    i += 2;
+                    _currentDependence = new Dependence(tokens[i + 2].Text, DependenceEnum.Method, _currentDependence);
+                    break;
+                case Kind.CloseBracket:
+                    _currentDependence = _currentDependence?.Parent;
+                    break;
+            }
+
+            tokens[i].Dependence = _currentDependence;
+        }
+
         return tokens;
     }
 
     private static List<Token> FixSemicolon(List<Token> tokens)
     {
-        for (var i = 0; i < tokens.Count; i++)
-            if (tokens[i].Kind == Kind.Method)
+        for (var i = 2; i < tokens.Count; i++)
+            if (tokens[i - 2].Kind is Kind.Dynamic or Kind.Void && tokens[i].Kind == Kind.Method)
             {
                 while (tokens[i].Kind != Kind.OpenBracket)
                     i++;
@@ -59,7 +86,7 @@ public static class Parser
                 tokens[i + 1].Kind == Kind.CloseSquareBracket)
             {
                 tokens.Insert(i, maybeDict);
-                tokens.Insert(i+1, new Token(" ", Kind.Whitespace));
+                tokens.Insert(i + 1, new Token(" ", Kind.Whitespace));
                 tokens.Insert(i + 2, new Token("is", Kind.Is));
                 tokens.Insert(i + 3, new Token(" ", Kind.Whitespace));
                 tokens.Insert(i + 4, new Token("Dictionary", Kind.Dictionary));
@@ -78,7 +105,7 @@ public static class Parser
                 tokens.Insert(i + 15, new Token(":", Kind.Colon));
                 tokens.Insert(i + 16, new Token(" ", Kind.Whitespace));
 
-                tokens.Insert(i + 17, new Token(tokens[i+13].Text, Kind.Int));
+                tokens.Insert(i + 17, new Token(tokens[i + 13].Text, Kind.Int));
                 i += 17;
             }
         }
@@ -142,10 +169,15 @@ public static class Parser
                 methods.Add(tokens[i].Text);
             }
 
-        for (var i = 0; i < tokens.Count; i++)
-            if (tokens[i].Kind == Kind.Unknown && tokens[i + 1].Kind == Kind.OpenParentheses)
+        for (var i = 2; i < tokens.Count; i++)
+            if (tokens[i - 2].Kind == Kind.Call && tokens[i + 1].Kind == Kind.OpenParentheses)
+            {
                 if (methods.Contains(tokens[i].Text))
                     tokens[i] = new Token(tokens[i].Text, Kind.Method);
+                tokens.RemoveAt(i - 2);
+                tokens.RemoveAt(i - 2);
+                i += 2;
+            }
 
 
         return tokens;

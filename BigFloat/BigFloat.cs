@@ -183,12 +183,20 @@ public readonly struct BigFloat : IComparable, IComparable<BigFloat>, IEquatable
     {
         if (value.Numerator.IsZero)
             return value;
-        if (exponent >= 0)
-            return new BigFloat(BigInteger.Pow(value.Numerator, Convert.ToInt32(exponent.ToString())),
-                BigInteger.Pow(value.Denominator, Convert.ToInt32(exponent.ToString())));
-        var numerator = value.Numerator;
-        return new BigFloat(BigInteger.Pow(value.Denominator, Convert.ToInt32((-exponent).ToString())),
-            BigInteger.Pow(numerator, Convert.ToInt32((-exponent).ToString())));
+        // if (exponent < int.MaxValue)
+        // {
+        //     if (exponent >= 0)
+        //         return new BigFloat(BigInteger.Pow(value.Numerator, Convert.ToInt32(exponent.ToString())),
+        //             BigInteger.Pow(value.Denominator, Convert.ToInt32(exponent.ToString())));
+        //     var numerator = value.Numerator;
+        //     return new BigFloat(BigInteger.Pow(value.Denominator, Convert.ToInt32((-exponent).ToString())),
+        //         BigInteger.Pow(numerator, Convert.ToInt32((-exponent).ToString())));
+        // }
+
+        BigFloat sum = 1;
+        for (var i = 0; i < exponent; i++) sum *= value;
+
+        return sum;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
@@ -245,9 +253,9 @@ public readonly struct BigFloat : IComparable, IComparable<BigFloat>, IEquatable
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static BigFloat Round(BigFloat value)
     {
-        var valueStr = value.ToString();
+        var valueStr = value.ToString(100, false, false).Replace('.', ',');
         var firstDigitInFractionalPart =
-            valueStr.Length > 1 ? Convert.ToInt32(valueStr.Split(',')[1][0].ToString()) : 0;
+            valueStr.IndexOf(',') != -1 ? Convert.ToInt32(valueStr.Split(',')[1][0].ToString()) : 0;
         if (firstDigitInFractionalPart < 5) return Truncate(value);
         return value < 0 ? Truncate(value) - 1 : Truncate(value) + 1;
     }
@@ -257,7 +265,7 @@ public readonly struct BigFloat : IComparable, IComparable<BigFloat>, IEquatable
     {
         if (radix > -1)
         {
-            var multiplier = ParseBigFloat('1' + new string('0', radix));
+            var multiplier = ParseBigFloat('1' + new string('0', radix - 1));
             return Round(value * multiplier) / multiplier;
         }
 
@@ -342,6 +350,8 @@ public readonly struct BigFloat : IComparable, IComparable<BigFloat>, IEquatable
     public static BigFloat Parse(string value)
     {
         value = value != null ? value.Trim() : throw new ArgumentNullException(nameof(value));
+        value = value.Replace(".", ",");
+        if (value.Split(',').Length > 2) throw new Exception("Number cannot contain many dots");
         var numberFormat = Thread.CurrentThread.CurrentCulture.NumberFormat;
         value = value.Replace(numberFormat.NumberGroupSeparator, "");
         var num = value.IndexOf(numberFormat.NumberDecimalSeparator);
@@ -397,18 +407,19 @@ public readonly struct BigFloat : IComparable, IComparable<BigFloat>, IEquatable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public override string ToString()
+    public string ToString(int precision = 100, bool trailingZeros = false, bool round = true)
     {
-        var resultStr = ToString(100);
+        var resultStr = ToStringInternal(precision, trailingZeros, round);
         if (resultStr.Contains('-')) resultStr = '-' + resultStr.Replace("-", "");
 
         return resultStr;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public string ToString(int precision, bool trailingZeros = false)
+    private string ToStringInternal(int precision, bool trailingZeros = false, bool round = true)
     {
         var bigFloat = Factor(this);
+        if (round) bigFloat = Round(bigFloat, 80);
         var numberFormat = Thread.CurrentThread.CurrentCulture.NumberFormat;
         BigInteger remainder;
         var bigInteger1 = BigInteger.DivRem(bigFloat.Numerator, bigFloat.Denominator, out remainder);

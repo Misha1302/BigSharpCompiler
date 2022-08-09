@@ -1,856 +1,1250 @@
-﻿using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Globalization;
+using System.Numerics;
 
 
 // use in compile project
-[Serializable]
-public readonly struct BigFloat : IComparable, IComparable<BigFloat>, IEquatable<BigFloat>, IConvertible
+public struct BigFloat
 {
-    public readonly BigInteger Numerator;
-    public readonly BigInteger Denominator;
+    /// <summary>
+    ///     The maximum Radix value for division operations.
+    /// </summary>
+    public static int DivMax
+    {
+        get => _divMax;
+        set
+        {
+            _divMax = value;
+            _sqrtMax = _divMax - 1;
+            _expMax = _divMax - 1;
+        }
+    }
 
-    public static BigFloat One => new(BigInteger.One);
+    private static int _divMax = 75;
 
-    public static BigFloat Zero => new(BigInteger.Zero);
+    private static int _sqrtMax = _divMax - 1;
+    private static int _expMax = _divMax - 1;
 
-    public static BigFloat MinusOne => new(BigInteger.MinusOne);
+    private const int LOG_MAX = 10;
+    private const int POS_INF = -1;
+    private const int NEG_INF = -2;
+    private const int NAN = -3;
+    private const int DIV_MAX_ADD = 50;
 
-    public static BigFloat OneHalf => new(BigInteger.One, 2);
+    private readonly BigInteger _value;
+    private int _radix;
+
+    private BigFloat(BigInteger value, int radix)
+    {
+        _value = value;
+        _radix = radix;
+        while (_radix > 0)
+        {
+            if (_value % 10 != 0)
+                break;
+            _value /= 10;
+            _radix--;
+        }
+    }
+
+    public BigFloat(string s)
+    {
+        s = s.Replace(',', '.');
+        s = ProcessScientificString(s);
+        if (!s.Contains('.'))
+        {
+            _value = BigInteger.Parse(s);
+            _radix = 0;
+        }
+        else
+        {
+            var split = s.Split('.');
+            if (split[1].Length > _divMax) split[1] = split[1][.._divMax];
+            _value = BigInteger.Parse(split[0] + split[1]);
+            _radix = split[1].Length;
+        }
+    }
+
+    public BigFloat(params byte[] data)
+    {
+        _radix = BitConverter.ToInt32(data, 0);
+        var d2 = new byte[data.Length - sizeof(int)];
+        Array.Copy(data, sizeof(int), d2, 0, d2.Length);
+        _value = new BigInteger(d2);
+    }
+
+    public BigFloat(double value)
+    {
+        _value = BigInteger.Zero;
+        if (double.IsNaN(value))
+        {
+            _radix = NAN;
+        }
+        else if (double.IsNegativeInfinity(value))
+        {
+            _radix = NEG_INF;
+        }
+        else if (double.IsPositiveInfinity(value))
+        {
+            _radix = POS_INF;
+        }
+        else
+        {
+            var str = ToLongString(value);
+            if (!str.Contains('.'))
+            {
+                _value = BigInteger.Parse(str);
+                _radix = 0;
+            }
+            else
+            {
+                var split = str.Split('.');
+                _value = BigInteger.Parse(split[0] + split[1]);
+                _radix = split[1].Length;
+            }
+        }
+    }
+
+    public BigFloat(float value)
+    {
+        if (float.IsNaN(value))
+        {
+            _value = BigInteger.Zero;
+            _radix = NAN;
+        }
+        else if (float.IsNegativeInfinity(value))
+        {
+            _value = BigInteger.Zero;
+            _radix = NEG_INF;
+        }
+        else if (float.IsPositiveInfinity(value))
+        {
+            _value = BigInteger.Zero;
+            _radix = POS_INF;
+        }
+        else
+        {
+            var str = ToLongString(value);
+            if (!str.Contains('.'))
+            {
+                _value = BigInteger.Parse(str);
+                _radix = 0;
+            }
+            else
+            {
+                var split = str.Split('.');
+                _value = BigInteger.Parse(split[0] + split[1]);
+                _radix = split[1].Length;
+            }
+        }
+    }
+
+    public BigFloat(decimal value)
+    {
+        _value = (BigInteger)value;
+        _radix = 0;
+        value -= decimal.Truncate(value);
+        while (value != 0)
+        {
+            value *= 10;
+            _value *= 10;
+            _radix++;
+            _value += (BigInteger)value;
+            value -= decimal.Truncate(value);
+        }
+    }
+
+    public BigFloat(BigInteger value) : this(value, 0)
+    {
+    }
+
+    public BigFloat(int value) : this(value, 0)
+    {
+    }
+
+    public BigFloat(uint value) : this(value, 0)
+    {
+    }
+
+    public BigFloat(long value) : this(value, 0)
+    {
+    }
+
+    public BigFloat(ulong value) : this(value, 0)
+    {
+    }
+
+    public bool IsZero => _radix >= 0 && _value.IsZero;
+
+    public bool IsPositiveInfinity => _radix == POS_INF;
+
+    public bool IsNegativeInfinity => _radix == NEG_INF;
+
+    public bool IsInfinity => IsPositiveInfinity || IsNegativeInfinity;
+
+    public bool IsNaN => _radix == NAN;
 
     public int Sign
     {
         get
         {
-            var bigInteger = Numerator;
-            var sign1 = bigInteger.Sign;
-            bigInteger = Denominator;
-            var sign2 = bigInteger.Sign;
-            switch (sign1 + sign2)
+            return _radix switch
             {
-                case -2:
-                case 2:
-                    return 1;
-                case 0:
-                    return -1;
-                default:
-                    return 0;
+                NAN => 0,
+                NEG_INF => -1,
+                POS_INF => 1,
+                _ => _value.Sign
+            };
+        }
+    }
+
+    public BigFloat Reciprocal => One / this;
+
+    public static BigFloat Round(BigFloat val)
+    {
+        if (val._radix <= 0)
+            return val;
+        var s = val._value / BigInteger.Pow(10, val._radix - 1);
+        if (s > 0)
+        {
+            if (s % 10 >= 5)
+                return s / 10 + 1;
+        }
+        else if (s % 10 <= -5)
+        {
+            return s / 10 - 1;
+        }
+
+        return s / 10;
+    }
+
+    public static BigFloat Round(BigFloat val, int radix)
+    {
+        if (val._radix <= 0)
+            return val;
+        if (val._radix > radix)
+        {
+            var s = val._value / BigInteger.Pow(10, val._radix - radix - 1);
+            if (s > 0)
+            {
+                if (s % 10 >= 5)
+                    return new BigFloat(s / 10 + 1, radix);
             }
+            else if (s % 10 <= -5)
+            {
+                return new BigFloat(s / 10 - 1, radix);
+            }
+
+            return new BigFloat(s / 10, radix);
         }
+
+        return val;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    private BigFloat(string value)
+    public static BigFloat Truncate(BigFloat val)
     {
-        var bigFloat = Parse(value);
-        Numerator = bigFloat.Numerator;
-        Denominator = bigFloat.Denominator;
+        if (val._radix <= 0)
+            return val;
+        return (BigInteger)val;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public BigFloat(BigInteger numerator, BigInteger denominator)
+    public static BigFloat Truncate(BigFloat val, int radix)
     {
-        Numerator = numerator;
-        Denominator = !(denominator == 0L) ? denominator : throw new ArgumentException("denominator equals 0");
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public BigFloat(BigInteger value)
-    {
-        Numerator = value;
-        Denominator = BigInteger.One;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public BigFloat(BigFloat value)
-    {
-        if (object.Equals(value, null))
+        if (val._radix <= 0)
+            return val;
+        if (val._radix >= radix)
         {
-            Numerator = BigInteger.Zero;
-            Denominator = BigInteger.One;
+            val._radix -= radix;
+            return new BigFloat((BigInteger)val, radix);
         }
-        else
+
+        return val;
+    }
+
+    public static BigFloat Floor(BigFloat val)
+    {
+        if (val._radix <= 0)
+            return val;
+        var s = val._value / BigInteger.Pow(10, val._radix - 1);
+        if (s < 0 && s % 10 < 0)
+            return s / 10 - 1;
+        return s / 10;
+    }
+
+    public static BigFloat Floor(BigFloat val, int radix)
+    {
+        if (val._radix <= 0)
+            return val;
+        if (val._radix > radix)
         {
-            Numerator = value.Numerator;
-            Denominator = value.Denominator;
+            var s = val._value / BigInteger.Pow(10, val._radix - radix - 1);
+            if (s < 0 && s % 10 < 0)
+                return new BigFloat(s / 10 - 1, radix);
+            return new BigFloat(s / 10, radix);
         }
+
+        return val;
     }
 
-    public BigFloat(ulong value)
-        : this(new BigInteger(value))
+    public static BigFloat Ceiling(BigFloat val)
     {
+        if (val._radix <= 0)
+            return val;
+        var s = val._value / BigInteger.Pow(10, val._radix - 1);
+        if (s > 0 && s % 10 > 0)
+            return s / 10 + 1;
+        return s / 10;
     }
 
-    public BigFloat(long value)
-        : this(new BigInteger(value))
+    public static BigFloat Ceiling(BigFloat val, int radix)
     {
+        if (val._radix <= 0)
+            return val;
+        if (val._radix > radix)
+        {
+            var s = val._value / BigInteger.Pow(10, val._radix - radix - 1);
+            if (s > 0 && s % 10 > 0)
+                return new BigFloat(s / 10 + 1, radix);
+            return new BigFloat(s / 10, radix);
+        }
+
+        return val;
     }
 
-    public BigFloat(uint value)
-        : this(new BigInteger(value))
+    public static BigFloat Exp(BigFloat val)
     {
+        if (val.IsNegativeInfinity) return Zero;
+        if (val._radix < 0) return val;
+
+        BigFloat last = 0, iter = 1;
+        BigInteger n = 1, fact = 1;
+        var sq = val;
+        while (Round(iter, _expMax) != Round(last, _expMax))
+        {
+            last = iter;
+            iter += sq / (fact *= n);
+            sq *= val;
+            n++;
+        }
+
+        return Round(iter, _expMax);
     }
 
-    public BigFloat(int value)
-        : this(new BigInteger(value))
+    private static BigFloat PowBySquaring(BigFloat x, BigInteger n)
     {
+        if (n == 0) return 1;
+        if (n < 0)
+        {
+            x = x.Reciprocal;
+            n = -n;
+        }
+
+        BigFloat y = 1;
+        while (n > 1)
+            if (n.IsEven)
+            {
+                x *= x;
+                n /= 2;
+            }
+            else
+            {
+                y *= x;
+                x *= x;
+                n = (n - 1) / 2;
+            }
+
+        return x * y;
     }
 
-    public BigFloat(float value)
-        : this(value.ToString("N99"))
+    private static BigFloat IntPow(BigFloat number, BigFloat degree)
     {
-    }
-
-    public BigFloat(double value)
-        : this(value.ToString("N99"))
-    {
-    }
-
-    public BigFloat(decimal value)
-        : this(value.ToString("N99"))
-    {
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Add(BigFloat value, BigFloat other)
-    {
-        if (object.Equals(other, null))
-            throw new ArgumentNullException(nameof(other));
-        return new BigFloat(value.Numerator * other.Denominator + other.Numerator * value.Denominator,
-            value.Denominator * other.Denominator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Subtract(BigFloat value, BigFloat other)
-    {
-        if (object.Equals(other, null))
-            throw new ArgumentNullException(nameof(other));
-        return new BigFloat(value.Numerator * other.Denominator - other.Numerator * value.Denominator,
-            value.Denominator * other.Denominator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Multiply(BigFloat value, BigFloat other)
-    {
-        if (object.Equals(other, null))
-            throw new ArgumentNullException(nameof(other));
-        var result = new BigFloat(value.Numerator * other.Numerator, value.Denominator * other.Denominator);
+        DivMax += DIV_MAX_ADD;
+        var result = number;
+        for (var i = 1; i < Abs(degree); i++) result *= number;
+        if (degree < 0) result = 1 / result;
+        DivMax -= DIV_MAX_ADD;
         return result;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Divide(BigFloat value, BigFloat other)
+    public static BigFloat Pow(BigFloat number, BigFloat degree, bool round = true)
     {
-        if (object.Equals(other, null))
-            throw new ArgumentNullException(nameof(other));
-        if (other.Numerator == 0L)
-            throw new DivideByZeroException(nameof(other));
-        return new BigFloat(value.Numerator * other.Denominator, value.Denominator * other.Numerator);
-    }
+        if (number.IsNaN || degree.IsNaN) return NaN;
+        if (degree == 0) return 1;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Remainder(BigFloat value, BigFloat other)
-    {
-        if (object.Equals(other, null))
-            throw new ArgumentNullException(nameof(other));
-        return value - Floor(value / other) * other;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat DivideRemainder(
-        BigFloat value,
-        BigFloat other,
-        out BigFloat remainder)
-    {
-        value = Divide(value, other);
-        remainder = Remainder(value, other);
-        return value;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Pow(BigFloat value, int exponent)
-    {
-        if (value.Numerator.IsZero)
-            return value;
-        if (exponent >= 0)
-            return new BigFloat(BigInteger.Pow(value.Numerator, exponent), BigInteger.Pow(value.Denominator, exponent));
-        var numerator = value.Numerator;
-        return new BigFloat(BigInteger.Pow(value.Denominator, -exponent), BigInteger.Pow(numerator, -exponent));
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Pow(BigFloat value, BigFloat exponent)
-    {
-        if (value.Numerator.IsZero)
-            return value;
-        // if (exponent < int.MaxValue)
-        // {
-        //     if (exponent >= 0)
-        //         return new BigFloat(BigInteger.Pow(value.Numerator, Convert.ToInt32(exponent.ToString())),
-        //             BigInteger.Pow(value.Denominator, Convert.ToInt32(exponent.ToString())));
-        //     var numerator = value.Numerator;
-        //     return new BigFloat(BigInteger.Pow(value.Denominator, Convert.ToInt32((-exponent).ToString())),
-        //         BigInteger.Pow(numerator, Convert.ToInt32((-exponent).ToString())));
-        // }
-
-        BigFloat sum = 1;
-        for (var i = 0; i < exponent; i++) sum *= value;
-
-        return sum;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Abs(BigFloat value)
-    {
-        return new BigFloat(BigInteger.Abs(value.Numerator), value.Denominator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Negate(BigFloat value)
-    {
-        return new BigFloat(BigInteger.Negate(value.Numerator), value.Denominator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Inverse(BigFloat value)
-    {
-        return new BigFloat(value.Denominator, value.Numerator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Increment(BigFloat value)
-    {
-        return new BigFloat(value.Numerator + value.Denominator, value.Denominator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Decrement(BigFloat value)
-    {
-        return new BigFloat(value.Numerator - value.Denominator, value.Denominator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Ceil(BigFloat value)
-    {
-        var numerator = value.Numerator;
-        return Factor(new BigFloat(
-            !(numerator < 0L)
-                ? numerator + (value.Denominator - BigInteger.Remainder(numerator, value.Denominator))
-                : numerator - BigInteger.Remainder(numerator, value.Denominator), value.Denominator));
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Floor(BigFloat value)
-    {
-        var numerator = value.Numerator;
-        return Factor(new BigFloat(
-            !(numerator < 0L)
-                ? numerator - BigInteger.Remainder(numerator, value.Denominator)
-                : numerator + (value.Denominator - BigInteger.Remainder(numerator, value.Denominator)),
-            value.Denominator));
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Round(BigFloat value)
-    {
-        var valueStr = value.ToString(100, false, false).Replace('.', ',');
-        var firstDigitInFractionalPart =
-            valueStr.IndexOf(',') != -1 ? Convert.ToInt32(valueStr.Split(',')[1][0].ToString()) : 0;
-        if (firstDigitInFractionalPart < 5) return Truncate(value);
-        return value < 0 ? Truncate(value) - 1 : Truncate(value) + 1;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Round(BigFloat value, int radix)
-    {
-        if (radix > -1)
+        BigFloat result;
+        if (degree % 1 == 0)
         {
-            var multiplier = ParseBigFloat('1' + new string('0', radix - 1));
-            return Round(value * multiplier) / multiplier;
+            result = IntPow(number, degree);
+        }
+        else
+        {
+            if (number < 0) throw new Exception("You can't raise a negative number to a fractional power");
+            degree = Round(degree, 2);
+            var (numerator, denominator) = GetTheSmallestFraction(degree);
+            result = GetRoot(number ^ numerator, denominator);
         }
 
-        var divider = ParseBigFloat('1' + new string('0', -radix));
-        return Round(value / divider) * divider;
+        var returnNumber = degree < 0 && number < 0 ? -Abs(result) : result;
+        return returnNumber;
+
+        /*
+        if (x.IsNaN || y.IsNaN) return NaN;
+        if (y == 0) return 1;
+
+        if (x._radix < 0 || y._radix < 0) return Math.Pow((double)x, (double)y);
+
+        if (y._radix != 0) return round ? Round(Exp(y * StrangeLog(x)), _divMax - 3) : Exp(y * StrangeLog(x));
+
+        if (x._radix == 0 && y >= 0 && y <= int.MaxValue)
+            return BigInteger.Pow(x._value, (int)y._value);
+        return round ? Round(PowBySquaring(x, y._value), _divMax - 3) : PowBySquaring(x, y._value);*/
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Truncate(BigFloat value)
+    public static (BigFloat numerator, BigFloat denominator) ReduceFraction(BigFloat numerator, BigFloat denominator)
     {
-        var numerator = value.Numerator;
-        return Factor(new BigFloat(numerator - BigInteger.Remainder(numerator, value.Denominator), value.Denominator));
-    }
+        if (numerator % 1 != 0) throw new Exception("non-integer values cannot be used in fractions (numerator)");
+        if (denominator % 1 != 0) throw new Exception("non-integer values cannot be used in fractions (denominator)");
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Decimals(BigFloat value)
-    {
-        return new BigFloat(BigInteger.Remainder(value.Numerator, value.Denominator), value.Denominator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat ShiftDecimalLeft(BigFloat value, int shift)
-    {
-        return shift < 0
-            ? ShiftDecimalRight(value, -shift)
-            : new BigFloat(value.Numerator * BigInteger.Pow(10, shift), value.Denominator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat ShiftDecimalRight(BigFloat value, int shift)
-    {
-        if (shift < 0)
-            return ShiftDecimalLeft(value, -shift);
-        var denominator = value.Denominator * BigInteger.Pow(10, shift);
-        return new BigFloat(value.Numerator, denominator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Sqrt(BigFloat value)
-    {
-        return Divide(Math.Pow(10.0, BigInteger.Log10(value.Numerator) / 2.0),
-            Math.Pow(10.0, BigInteger.Log10(value.Denominator) / 2.0));
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static double Log10(BigFloat value)
-    {
-        return BigInteger.Log10(value.Numerator) - BigInteger.Log10(value.Denominator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static double Log(BigFloat value, double baseValue)
-    {
-        return BigInteger.Log(value.Numerator, baseValue) - BigInteger.Log(value.Numerator, baseValue);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Factor(BigFloat value)
-    {
-        if (value.Denominator == 1L)
-            return value;
-        var bigInteger = BigInteger.GreatestCommonDivisor(value.Numerator, value.Denominator);
-        return new BigFloat(value.Numerator / bigInteger, value.Denominator / bigInteger);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public new static bool Equals(object left, object right)
-    {
-        if (left == null && right == null)
-            return true;
-        return left != null && right != null && !(left.GetType() != right.GetType()) &&
-               ((BigInteger)left).Equals((BigInteger)right);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static string ToString(BigFloat value)
-    {
-        return value.ToString();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat Parse(string value)
-    {
-        value = value != null ? value.Trim() : throw new ArgumentNullException(nameof(value));
-        value = value.Replace(".", ",");
-        if (value.Split(',').Length > 2) throw new Exception("Number cannot contain many dots");
-        var numberFormat = Thread.CurrentThread.CurrentCulture.NumberFormat;
-        value = value.Replace(numberFormat.NumberGroupSeparator, "");
-        var num = value.IndexOf(numberFormat.NumberDecimalSeparator);
-        value = value.Replace(numberFormat.NumberDecimalSeparator, "");
-        return num < 0
-            ? Factor(BigInteger.Parse(value))
-            : Factor(new BigFloat(BigInteger.Parse(value), BigInteger.Pow(10, value.Length - num)));
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat ParseBigFloat(string number)
-    {
-        number = number.Replace('.', ',');
-        number = number.TrimEnd(',');
-        return Parse(number);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public BigFloat WriteLine()
-    {
-        Console.WriteLine(this);
-        return this;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static bool TryParse(string value, out BigFloat result)
-    {
-        try
+        var greatestCommonDivisor = GetGreatestCommonDivisor(numerator, denominator);
+        while (greatestCommonDivisor != 1)
         {
-            result = Parse(value);
-            return true;
+            numerator /= greatestCommonDivisor;
+            denominator /= greatestCommonDivisor;
+            greatestCommonDivisor = GetGreatestCommonDivisor(numerator, denominator);
         }
-        catch (ArgumentNullException ex)
+
+        return (numerator, denominator);
+    }
+
+    public static (BigFloat numerator, BigFloat denominator) GetTheSmallestFraction(BigFloat number)
+    {
+        //TODO: Исправить!!!
+        //number = Round(number, _divMax - 3);
+        var zeroCount = new BigFloat('1' + new string('0', number.ToString().Split('.')[1].Length));
+        return ReduceFraction(number * zeroCount, zeroCount);
+    }
+
+    public static BigFloat GetGreatestCommonDivisor(BigFloat a, BigFloat b)
+    {
+        while (b != 0)
         {
-            result = new BigFloat();
+            var temp = b;
+            b = a % b;
+            a = temp;
+        }
+
+        return a;
+    }
+
+
+    // TODO: sin, cos, tan, sinh, cosh, tanh, asin, acos, atan, atan2
+
+    public static BigFloat Sqrt(BigFloat val)
+    {
+        if (val.IsZero || val.IsPositiveInfinity || val.IsNaN)
+            return val;
+        if (val.Sign == -1) return NaN;
+
+        var root = val / 2;
+        var oRoot = val / root;
+        while (Round(root, _sqrtMax) != Round(oRoot, _sqrtMax))
+        {
+            root = (root + oRoot) / 2;
+            oRoot = val / root;
+        }
+
+        return root;
+    }
+
+    public static BigFloat Abs(BigFloat val)
+    {
+        switch (val._radix)
+        {
+            case NAN:
+                return NaN;
+            case NEG_INF:
+            case POS_INF:
+                return PositiveInfinity;
+            default:
+                return new BigFloat(BigInteger.Abs(val._value), val._radix);
+        }
+    }
+
+    private static BigFloat StrangeLog(BigFloat val)
+    {
+        if (val.Sign != 1) return NaN;
+        if (val._radix < 0) return val;
+
+        if (val == 10) return Ln10;
+
+        bool neg;
+        if (val < 1)
+        {
+            // log(1-x)
+            neg = true;
+            val = 1 - val;
+        }
+        else if (val < 2)
+        {
+            // log(1+x)
+            neg = false;
+            val -= 1;
+        }
+        else if (val < 4)
+        {
+            return StrangeLog(Sqrt(val)) * 2;
+        }
+        else if (val < 10)
+        {
+            return StrangeLog(Sqrt(Sqrt(val))) * 4;
+        }
+        else
+        {
+            var deltaRadix = 0;
+            while (val > 10)
+            {
+                val._radix++;
+                deltaRadix++;
+            }
+
+            return StrangeLog(val) + deltaRadix * Ln10;
+        }
+
+        BigFloat last = 1, iter = 0;
+        BigInteger n = 1;
+        var sq = val;
+        while (Round(iter, LOG_MAX) != Round(last, LOG_MAX))
+        {
+            last = iter;
+            if (n.IsEven || neg)
+                iter -= sq / n;
+            else
+                iter += sq / n;
+            sq *= val;
+            n++;
+        }
+
+        return Round(iter, LOG_MAX);
+    }
+
+    public static BigFloat Min(BigFloat a, BigFloat b)
+    {
+        return a > b ? b : a;
+    }
+
+    public static BigFloat Max(BigFloat a, BigFloat b)
+    {
+        return a > b ? a : b;
+    }
+
+    public static BigFloat Log(BigFloat a, BigFloat x)
+    {
+        // Log5(25)=5*5=25
+        //TODO: find log
+        //BigFloat left, right, middle;
+        return 0;
+    }
+
+    public static BigFloat Log10(BigFloat val)
+    {
+        return StrangeLog(val) / Ln10;
+    }
+
+    public static BigFloat operator +(BigFloat val)
+    {
+        return val;
+    }
+
+    public static BigFloat operator -(BigFloat val)
+    {
+        return val._radix switch
+        {
+            NAN => NaN,
+            POS_INF => NegativeInfinity,
+            NEG_INF => PositiveInfinity,
+            _ => new BigFloat(-val._value, val._radix)
+        };
+    }
+
+    public static BigFloat operator ~(BigFloat val)
+    {
+        return val._radix < 0 ? val : new BigFloat(~val._value, val._radix);
+    }
+
+    public static BigFloat operator ++(BigFloat val)
+    {
+        return val + 1;
+    }
+
+    public static BigFloat operator --(BigFloat val)
+    {
+        return val - 1;
+    }
+
+    public static BigFloat operator +(BigFloat a, BigFloat b)
+    {
+        if (a.IsNaN || b.IsNaN)
+            return NaN;
+        if ((a.IsPositiveInfinity && b.IsNegativeInfinity) || (a.IsNegativeInfinity && b.IsPositiveInfinity))
+            return NaN;
+        if (a.IsPositiveInfinity || b.IsPositiveInfinity)
+            return PositiveInfinity;
+        if (a.IsNegativeInfinity || b.IsNegativeInfinity)
+            return NegativeInfinity;
+        var valA = a._value;
+        var valB = b._value;
+        int radix;
+        if (a._radix == b._radix)
+        {
+            radix = a._radix;
+        }
+        else if (a._radix > b._radix)
+        {
+            radix = a._radix;
+            valB *= BigInteger.Pow(10, a._radix - b._radix);
+        }
+        else
+        {
+            radix = b._radix;
+            valA *= BigInteger.Pow(10, b._radix - a._radix);
+        }
+
+        var returnValue = new BigFloat(valA + valB, radix);
+        return Round(returnValue, _divMax - 3);
+    }
+
+    public static BigFloat operator -(BigFloat a, BigFloat b)
+    {
+        var returnValue = a + -b;
+        return Round(returnValue, _divMax - 3);
+    }
+
+    public static BigFloat operator *(BigFloat a, BigFloat b)
+    {
+        if (a.IsNaN || b.IsNaN)
+            return NaN;
+        if (a.IsInfinity || b.IsInfinity)
+            switch (a.Sign * b.Sign)
+            {
+                case 1:
+                    return PositiveInfinity;
+                case -1:
+                    return NegativeInfinity;
+                case 0:
+                    return NaN;
+            }
+
+        var returnValue = new BigFloat(a._value * b._value, a._radix + b._radix);
+        return Round(returnValue, _divMax - 3);
+    }
+
+    public static BigFloat operator /(BigFloat a, BigFloat b)
+    {
+        if (a.IsNaN || b.IsNaN)
+            return NaN;
+        if (a.IsInfinity && b.IsInfinity)
+            return NaN;
+        if (b.IsZero)
+            switch (a.Sign)
+            {
+                case 1:
+                    return PositiveInfinity;
+                case -1:
+                    return NegativeInfinity;
+                case 0:
+                    return NaN;
+            }
+
+        if (a.IsInfinity)
+            switch (a.Sign * b.Sign)
+            {
+                case 1:
+                    return PositiveInfinity;
+                case -1:
+                    return NegativeInfinity;
+            }
+
+        if (b.IsInfinity)
+            return Zero;
+        var valA = a._value;
+        var valB = b._value;
+        if (a._radix > b._radix)
+            valB *= BigInteger.Pow(10, a._radix - b._radix);
+        else
+            valA *= BigInteger.Pow(10, b._radix - a._radix);
+        var result = BigInteger.Zero;
+        var radix = 0;
+        while (true)
+        {
+            result += BigInteger.DivRem(valA, valB, out valA);
+            if (valA.IsZero)
+                break;
+            if (radix > _divMax)
+                break;
+            radix++;
+            result *= 10;
+            valA *= 10;
+        }
+
+        var returnValue = new BigFloat(result, radix);
+        return Round(returnValue, _divMax - 3);
+    }
+
+    public static BigFloat operator %(BigFloat a, BigFloat b)
+    {
+        if (a.IsNaN || b.IsNaN || a.IsInfinity || b.IsZero)
+            return NaN;
+        if (b.IsInfinity)
+            return a;
+        var valA = a._value;
+        var valB = b._value;
+        int radix;
+        if (a._radix == b._radix)
+        {
+            radix = a._radix;
+        }
+        else if (a._radix > b._radix)
+        {
+            radix = a._radix;
+            valB *= BigInteger.Pow(10, a._radix - b._radix);
+        }
+        else
+        {
+            radix = b._radix;
+            valA *= BigInteger.Pow(10, b._radix - a._radix);
+        }
+
+        var returnValue = new BigFloat(valA % valB, radix);
+        return Round(returnValue, _divMax - 3);
+    }
+
+    public static BigFloat operator &(BigFloat a, BigFloat b)
+    {
+        if (a._radix < 0 || b._radix < 0)
+            return NaN;
+        var valA = a._value;
+        var valB = b._value;
+        int radix;
+        if (a._radix == b._radix)
+        {
+            radix = a._radix;
+        }
+        else if (a._radix > b._radix)
+        {
+            radix = a._radix;
+            valB *= BigInteger.Pow(10, a._radix - b._radix);
+        }
+        else
+        {
+            radix = b._radix;
+            valA *= BigInteger.Pow(10, b._radix - a._radix);
+        }
+
+        return new BigFloat(valA & valB, radix);
+    }
+
+    public static BigFloat operator |(BigFloat a, BigFloat b)
+    {
+        if (a._radix < 0 || b._radix < 0)
+            return NaN;
+        var valA = a._value;
+        var valB = b._value;
+        int radix;
+        if (a._radix == b._radix)
+        {
+            radix = a._radix;
+        }
+        else if (a._radix > b._radix)
+        {
+            radix = a._radix;
+            valB *= BigInteger.Pow(10, a._radix - b._radix);
+        }
+        else
+        {
+            radix = b._radix;
+            valA *= BigInteger.Pow(10, b._radix - a._radix);
+        }
+
+        return new BigFloat(valA | valB, radix);
+    }
+
+    public static BigFloat operator ^(BigFloat a, BigFloat b)
+    {
+        return Pow(a, b);
+        /*if (a.Radix < 0 || b.Radix < 0)
+            return NaN;
+        BigInteger valA = a.Value;
+        BigInteger valB = b.Value;
+        int radix;
+        if (a.Radix == b.Radix)
+            radix = a.Radix;
+        else if (a.Radix > b.Radix)
+        {
+            radix = a.Radix;
+            valB *= BigInteger.Pow(10, a.Radix - b.Radix);
+        }
+        else
+        {
+            radix = b.Radix;
+            valA *= BigInteger.Pow(10, b.Radix - a.Radix);
+        }
+        return new BigFloat(valA ^ valB, radix);*/
+    }
+
+
+    /// <summary>
+    ///     Very resource intensive operation. Looking for the root of a number with the N-th degree
+    /// </summary>
+    /// <param name="number">root extraction number</param>
+    /// <param name="degree">degree</param>
+    /// <returns></returns>
+    public static BigFloat GetRoot(BigFloat number, BigFloat degree)
+    {
+        if (number < 0 && degree % 2 == 0) throw new Exception("There is no even root of a negative number");
+
+        DivMax += DIV_MAX_ADD;
+        if (degree % 1 == 0)
+        {
+            var value = degree > 0 ? GetNaturalRoot(number, degree) : 1 / GetNaturalRoot(number, Abs(degree));
+            DivMax -= DIV_MAX_ADD;
+            return value;
+        }
+
+        // if degree isn't integer
+
+        var (numerator, denominator) = GetTheSmallestFraction(degree);
+
+        DivMax -= DIV_MAX_ADD;
+        var result = Pow(number, denominator / numerator, false);
+
+        return result;
+    }
+
+    private static BigFloat GetNaturalRoot(BigFloat number, BigFloat degree)
+    {
+        BigFloat left, right, middle;
+
+        if (number > 0)
+        {
+            right = number + 1;
+            left = 0;
+        }
+        else
+        {
+            right = 0;
+            left = number - 1;
+        }
+
+        var lastMiddle = (left + right) / 2 + 1;
+        while (true)
+        {
+            middle = (left + right) / 2;
+            var result = Pow(middle, degree, false);
+
+            if (middle == lastMiddle) break;
+            lastMiddle = middle;
+
+            if (result > number) right = middle;
+            else if (result < number) left = middle;
+        }
+
+        return middle;
+    }
+
+    public static bool operator ==(BigFloat a, BigFloat b)
+    {
+        if (a.IsNaN || b.IsNaN)
             return false;
-        }
-        catch (FormatException ex)
-        {
-            result = new BigFloat();
+        if (a._radix < 0 || b._radix < 0)
+            return a._radix == b._radix;
+        return a._radix == b._radix && a._value == b._value;
+    }
+
+    public static bool operator !=(BigFloat a, BigFloat b)
+    {
+        if (a.IsNaN || b.IsNaN)
+            return true;
+        if (a._radix < 0 || b._radix < 0)
+            return a._radix != b._radix;
+        return a._radix != b._radix || a._value != b._value;
+    }
+
+    public static bool operator <(BigFloat a, BigFloat b)
+    {
+        if (a.IsNaN || b.IsNaN)
             return false;
-        }
+        if (a.IsPositiveInfinity)
+            return !b.IsPositiveInfinity;
+        if (a.IsNegativeInfinity)
+            return false;
+        var valA = a._value;
+        var valB = b._value;
+        if (a._radix > b._radix)
+            valB *= BigInteger.Pow(10, a._radix - b._radix);
+        else if (a._radix < b._radix)
+            valA *= BigInteger.Pow(10, b._radix - a._radix);
+        return valA < valB;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static int Compare(BigFloat left, BigFloat right)
+    public static bool operator >(BigFloat a, BigFloat b)
     {
-        if (object.Equals(left, null))
-            throw new ArgumentNullException(nameof(left));
-        return !Equals(right, null)
-            ? new BigFloat(left).CompareTo(right)
-            : throw new ArgumentNullException(nameof(right));
+        if (a.IsNaN || b.IsNaN)
+            return false;
+        if (a.IsPositiveInfinity)
+            return false;
+        if (a.IsNegativeInfinity)
+            return !b.IsNegativeInfinity;
+        var valA = a._value;
+        var valB = b._value;
+        if (a._radix > b._radix)
+            valB *= BigInteger.Pow(10, a._radix - b._radix);
+        else if (a._radix < b._radix)
+            valA *= BigInteger.Pow(10, b._radix - a._radix);
+        return valA > valB;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public string ToString(int precision = 100, bool trailingZeros = false, bool round = true)
+    public static bool operator <=(BigFloat a, BigFloat b)
     {
-        var resultStr = ToStringInternal(precision, trailingZeros, round);
-        if (resultStr.Contains('-')) resultStr = '-' + resultStr.Replace("-", "");
-
-        return resultStr;
+        return a == b || a < b;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    private string ToStringInternal(int precision, bool trailingZeros = false, bool round = true)
+    public static bool operator >=(BigFloat a, BigFloat b)
     {
-        var bigFloat = Factor(this);
-        if (round) bigFloat = Round(bigFloat, 80);
-        var numberFormat = Thread.CurrentThread.CurrentCulture.NumberFormat;
-        BigInteger remainder;
-        var bigInteger1 = BigInteger.DivRem(bigFloat.Numerator, bigFloat.Denominator, out remainder);
-        if ((remainder == 0L) & trailingZeros)
-            return bigInteger1 + numberFormat.NumberDecimalSeparator + "0";
-        if (remainder == 0L)
-            return bigInteger1.ToString();
-        var bigInteger2 = bigFloat.Numerator * BigInteger.Pow(10, precision) / bigFloat.Denominator;
-        if ((bigInteger2 == 0L) & trailingZeros)
-            return bigInteger1 + numberFormat.NumberDecimalSeparator + "0";
-        if (bigInteger2 == 0L)
-            return bigInteger1.ToString();
-        var stringBuilder = new StringBuilder();
-        while (precision-- > 0)
-        {
-            stringBuilder.Append(bigInteger2 % 10);
-            bigInteger2 /= 10;
-        }
-
-        var str = bigInteger1 + numberFormat.NumberDecimalSeparator +
-                  new string(stringBuilder.ToString().Reverse().ToArray());
-        if (trailingZeros)
-            return str;
-        return str.TrimEnd('0');
+        return a == b || a > b;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public string ToMixString()
-    {
-        var bigFloat = Factor(this);
-        BigInteger remainder;
-        var bigInteger = BigInteger.DivRem(bigFloat.Numerator, bigFloat.Denominator, out remainder);
-        if (remainder == 0L)
-            return bigInteger.ToString();
-        return bigInteger + ", " + remainder + "/" + bigFloat.Denominator;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public string ToRationalString()
-    {
-        var bigFloat = Factor(this);
-        var bigInteger = bigFloat.Numerator;
-        var str1 = bigInteger.ToString();
-        bigInteger = bigFloat.Denominator;
-        var str2 = bigInteger.ToString();
-        return str1 + " / " + str2;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public int CompareTo(BigFloat other)
-    {
-        if (object.Equals(other, null))
-            throw new ArgumentNullException(nameof(other));
-        var numerator1 = Numerator;
-        var numerator2 = other.Numerator;
-        var denominator = other.Denominator;
-        return BigInteger.Compare(numerator1 * denominator, numerator2 * Denominator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public int CompareTo(object obj)
-    {
-        if (obj == null)
-            throw new ArgumentNullException(nameof(obj));
-        if (!(obj is BigFloat other))
-            throw new ArgumentException("obj is not a BigFloat");
-        return CompareTo(other);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public override bool Equals(object obj)
-    {
-        return obj != null && !(GetType() != obj.GetType()) && Numerator == ((BigFloat)obj).Numerator &&
-               Denominator == ((BigFloat)obj).Denominator;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public bool Equals(BigFloat other)
-    {
-        return other.Numerator * Denominator == Numerator * other.Denominator;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public override int GetHashCode()
-    {
-        return (Numerator, Denominator).GetHashCode();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator -(BigFloat value)
-    {
-        return Negate(value);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator -(BigFloat left, BigFloat right)
-    {
-        return Subtract(left, right);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator --(BigFloat value)
-    {
-        return Decrement(value);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator +(BigFloat left, BigFloat right)
-    {
-        return Add(left, right);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator +(BigFloat value)
-    {
-        return Abs(value);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator ++(BigFloat value)
-    {
-        return Increment(value);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator %(BigFloat left, BigFloat right)
-    {
-        return Remainder(left, right);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator *(BigFloat left, BigFloat right)
-    {
-        return Multiply(left, right);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator /(BigFloat left, BigFloat right)
-    {
-        return Divide(left, right);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator >> (BigFloat value, int shift)
-    {
-        return ShiftDecimalRight(value, shift);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator <<(BigFloat value, int shift)
-    {
-        return ShiftDecimalLeft(value, shift);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator ^(BigFloat left, int right)
-    {
-        return Pow(left, right);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator ^(BigFloat left, BigFloat right)
-    {
-        return Pow(left, right);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static BigFloat operator ~(BigFloat value)
-    {
-        return Inverse(value);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static bool operator !=(BigFloat left, BigFloat right)
-    {
-        return Compare(left, right) != 0;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static bool operator ==(BigFloat left, BigFloat right)
-    {
-        return Compare(left, right) == 0;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static bool operator <(BigFloat left, BigFloat right)
-    {
-        return Compare(left, right) < 0;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static bool operator <=(BigFloat left, BigFloat right)
-    {
-        return Compare(left, right) <= 0;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static bool operator >(BigFloat left, BigFloat right)
-    {
-        return Compare(left, right) > 0;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static bool operator >=(BigFloat left, BigFloat right)
-    {
-        return Compare(left, right) >= 0;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static bool operator true(BigFloat value)
-    {
-        return value != 0;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static bool operator false(BigFloat value)
-    {
-        return value == 0;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static explicit operator decimal(BigFloat value)
-    {
-        if (decimal.MinValue > value)
-            throw new OverflowException("value is less than decimal.MinValue.");
-        if (decimal.MaxValue < value)
-            throw new OverflowException("value is greater than decimal.MaxValue.");
-        return (decimal)value.Numerator / (decimal)value.Denominator;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static explicit operator double(BigFloat value)
-    {
-        if (double.MinValue > value)
-            throw new OverflowException("value is less than double.MinValue.");
-        if (double.MaxValue < value)
-            throw new OverflowException("value is greater than double.MaxValue.");
-        return (double)value.Numerator / (double)value.Denominator;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static explicit operator float(BigFloat value)
-    {
-        if (float.MinValue > value)
-            throw new OverflowException("value is less than float.MinValue.");
-        if (float.MaxValue < value)
-            throw new OverflowException("value is greater than float.MaxValue.");
-        return (float)value.Numerator / (float)value.Denominator;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static implicit operator BigFloat(byte value)
     {
-        return new BigFloat((uint)value);
+        return new BigFloat(value);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static implicit operator BigFloat(sbyte value)
     {
         return new BigFloat(value);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static implicit operator BigFloat(short value)
     {
         return new BigFloat(value);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static implicit operator BigFloat(ushort value)
     {
-        return new BigFloat((uint)value);
+        return new BigFloat(value);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static implicit operator BigFloat(int value)
     {
         return new BigFloat(value);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static implicit operator BigFloat(long value)
-    {
-        return new BigFloat(value);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static implicit operator BigFloat(uint value)
     {
         return new BigFloat(value);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    public static implicit operator BigFloat(long value)
+    {
+        return new BigFloat(value);
+    }
+
     public static implicit operator BigFloat(ulong value)
     {
         return new BigFloat(value);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static implicit operator BigFloat(decimal value)
-    {
-        return new BigFloat(value);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static implicit operator BigFloat(double value)
-    {
-        return new BigFloat(value);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static implicit operator BigFloat(float value)
     {
         return new BigFloat(value);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    public static implicit operator BigFloat(double value)
+    {
+        return new BigFloat(value);
+    }
+
+    public static implicit operator BigFloat(decimal value)
+    {
+        return new BigFloat(value);
+    }
+
     public static implicit operator BigFloat(BigInteger value)
     {
         return new BigFloat(value);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static explicit operator BigFloat(string value)
+    public static explicit operator byte(BigFloat value)
     {
-        return new BigFloat(value);
+        return value._radix switch
+        {
+            NAN => 0,
+            POS_INF => byte.MaxValue,
+            NEG_INF => byte.MinValue,
+            _ => (byte)(value._value / BigInteger.Pow(10, value._radix))
+        };
     }
 
-    # region IConvertible
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public TypeCode GetTypeCode()
+    public static explicit operator sbyte(BigFloat value)
     {
-        return TypeCode.Int64;
+        return value._radix switch
+        {
+            NAN => 0,
+            POS_INF => sbyte.MaxValue,
+            NEG_INF => sbyte.MinValue,
+            _ => (sbyte)(value._value / BigInteger.Pow(10, value._radix))
+        };
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public bool ToBoolean(IFormatProvider? provider)
+    public static explicit operator short(BigFloat value)
     {
-        return Convert.ToBoolean(ToString());
+        return value._radix switch
+        {
+            NAN => 0,
+            POS_INF => short.MaxValue,
+            NEG_INF => short.MinValue,
+            _ => (short)(value._value / BigInteger.Pow(10, value._radix))
+        };
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public byte ToByte(IFormatProvider? provider)
+    public static explicit operator ushort(BigFloat value)
     {
-        return Convert.ToByte(ToString());
+        return value._radix switch
+        {
+            NAN => 0,
+            POS_INF => ushort.MaxValue,
+            NEG_INF => ushort.MinValue,
+            _ => (ushort)(value._value / BigInteger.Pow(10, value._radix))
+        };
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public char ToChar(IFormatProvider? provider)
+    public static explicit operator int(BigFloat value)
     {
-        return Convert.ToChar(ToString());
+        return value._radix switch
+        {
+            NAN => 0,
+            POS_INF => int.MaxValue,
+            NEG_INF => int.MinValue,
+            _ => (int)(value._value / BigInteger.Pow(10, value._radix))
+        };
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public DateTime ToDateTime(IFormatProvider? provider)
+    public static explicit operator uint(BigFloat value)
     {
-        return Convert.ToDateTime(ToString());
+        return value._radix switch
+        {
+            NAN => 0,
+            POS_INF => uint.MaxValue,
+            NEG_INF => uint.MinValue,
+            _ => (uint)(value._value / BigInteger.Pow(10, value._radix))
+        };
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public decimal ToDecimal(IFormatProvider? provider)
+    public static explicit operator long(BigFloat value)
     {
-        return Convert.ToDecimal(ToString());
+        return value._radix switch
+        {
+            NAN => 0,
+            POS_INF => long.MaxValue,
+            NEG_INF => long.MinValue,
+            _ => (long)(value._value / BigInteger.Pow(10, value._radix))
+        };
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public double ToDouble(IFormatProvider? provider)
+    public static explicit operator ulong(BigFloat value)
     {
-        return Convert.ToDouble(ToString());
+        return value._radix switch
+        {
+            NAN => 0,
+            POS_INF => ulong.MaxValue,
+            NEG_INF => ulong.MinValue,
+            _ => (ulong)(value._value / BigInteger.Pow(10, value._radix))
+        };
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public short ToInt16(IFormatProvider? provider)
+    public static explicit operator float(BigFloat value)
     {
-        return Convert.ToInt16(ToString());
+        switch (value._radix)
+        {
+            case NAN:
+                return float.NaN;
+            case POS_INF:
+                return float.PositiveInfinity;
+            case NEG_INF:
+                return float.NegativeInfinity;
+            default:
+                var res = BigInteger.DivRem(value._value, BigInteger.Pow(10, value._radix), out var rem);
+                return (float)res + (float)rem / (float)Math.Pow(10, value._radix);
+        }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public int ToInt32(IFormatProvider? provider)
+    public static explicit operator double(BigFloat value)
     {
-        return Convert.ToInt32(ToString());
+        switch (value._radix)
+        {
+            case NAN:
+                return double.NaN;
+            case POS_INF:
+                return double.PositiveInfinity;
+            case NEG_INF:
+                return double.NegativeInfinity;
+            default:
+                var res = BigInteger.DivRem(value._value, BigInteger.Pow(10, value._radix), out var rem);
+                return (double)res + (double)rem / Math.Pow(10, value._radix);
+        }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public long ToInt64(IFormatProvider? provider)
+    public static explicit operator decimal(BigFloat value)
     {
-        return Convert.ToInt64(ToString());
+        switch (value._radix)
+        {
+            case NAN:
+                return decimal.Zero;
+            case POS_INF:
+                return decimal.MaxValue;
+            case NEG_INF:
+                return decimal.MinValue;
+            default:
+                var res = BigInteger.DivRem(value._value, BigInteger.Pow(10, value._radix), out var rem);
+                return (decimal)res + (decimal)rem / (decimal)Math.Pow(10, value._radix);
+        }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public sbyte ToSByte(IFormatProvider? provider)
+    public static explicit operator BigInteger(BigFloat value)
     {
-        return Convert.ToSByte(ToString());
+        return value._radix switch
+        {
+            NAN => BigInteger.Zero,
+            POS_INF => BigInteger.One,
+            NEG_INF => BigInteger.MinusOne,
+            _ => value._value / BigInteger.Pow(10, value._radix)
+        };
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public float ToSingle(IFormatProvider? provider)
+    public static readonly BigFloat Zero = new();
+
+    public static readonly BigFloat One = new(1);
+
+    public static readonly BigFloat PositiveInfinity = new(0, POS_INF);
+
+    public static readonly BigFloat NegativeInfinity = new(0, NEG_INF);
+
+    public static readonly BigFloat NaN = new(0, NAN);
+
+    public static readonly BigFloat Ln10 = new(0x64, 0x00, 0x00, 0x00, 0x88, 0x51, 0x81, 0x0A, 0xA0, 0x03,
+        0xDD, 0x3D, 0xF0, 0xAD, 0x42, 0x3C, 0x70, 0xDD, 0x55, 0xFC, 0x52, 0xFB, 0xEB, 0xA3, 0x3A, 0x04, 0x25, 0x34,
+        0x2A, 0x19, 0x13, 0x65, 0x02, 0x2A, 0x8C, 0xA5, 0xD8, 0xA8, 0x00, 0xC7, 0xF1, 0x94, 0x4B, 0xF5, 0x1B, 0x2A);
+
+    public override string ToString()
     {
-        return Convert.ToSingle(ToString());
+        switch (_radix)
+        {
+            case NAN:
+                return "NaN";
+            case POS_INF:
+                return "Infinity";
+            case NEG_INF:
+                return "-Infinity";
+            case 0:
+                return _value.ToString("R");
+            default:
+                var m = this < Zero;
+                var str = BigInteger.Abs(_value).ToString("R").PadLeft(_radix + 1, '0');
+                str = str.Insert(str.Length - _radix, ".");
+                if (m)
+                    return "-" + str;
+                return str;
+        }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public string ToString(IFormatProvider? provider)
+    public static BigFloat Parse(string s)
     {
-        return ToString();
+        if (s.Equals("nan", StringComparison.OrdinalIgnoreCase))
+            return NaN;
+        if (s.Equals("infinity", StringComparison.OrdinalIgnoreCase))
+            return PositiveInfinity;
+        if (s.Equals("-infinity", StringComparison.OrdinalIgnoreCase))
+            return NegativeInfinity;
+        s = ProcessScientificString(s);
+        if (!s.Contains('.'))
+            return BigInteger.Parse(s);
+        var split = s.Split('.');
+        return new BigFloat(BigInteger.Parse(split[0] + split[1]), split[1].Length);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public object ToType(Type conversionType, IFormatProvider? provider)
+    public byte[] ToByteArray()
     {
-        return this;
+        var d2 = _value.ToByteArray();
+        var data = new byte[d2.Length + sizeof(int)];
+        BitConverter.GetBytes(_radix).CopyTo(data, 0);
+        d2.CopyTo(data, sizeof(int));
+        return data;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public ushort ToUInt16(IFormatProvider? provider)
+    public override bool Equals(object? obj)
     {
-        return Convert.ToUInt16(ToString());
+        if (obj is not BigFloat) return false;
+        return this == (BigFloat)obj;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public uint ToUInt32(IFormatProvider? provider)
+    public override int GetHashCode()
     {
-        return Convert.ToUInt32(ToString());
+        return _value.GetHashCode() ^ _radix.GetHashCode();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public ulong ToUInt64(IFormatProvider? provider)
+    private static string ProcessScientificString(string str)
     {
-        return Convert.ToUInt64(ToString());
+        if (!str.Contains('E') & !str.Contains('e'))
+            return str;
+        str = str.ToUpper();
+        const char decSeparator = '.';
+        var exponentParts = str.Split('E');
+        var decimalParts = exponentParts[0].Split(decSeparator);
+        if (decimalParts.Length == 1)
+            decimalParts = new[]
+            {
+                exponentParts[0],
+                "0"
+            };
+        var exponentValue = int.Parse(exponentParts[1]);
+        var newNumber = decimalParts[0] + decimalParts[1];
+        string? result;
+        if (exponentValue > 0)
+        {
+            result = newNumber + GetZeros(exponentValue - decimalParts[1].Length);
+        }
+        else
+        {
+            result = string.Empty;
+            if (newNumber.StartsWith("-"))
+            {
+                result = "-";
+                newNumber = newNumber[1..];
+            }
+
+            result += "0" + decSeparator + GetZeros(exponentValue + decimalParts[0].Length) + newNumber;
+            result = result.TrimEnd('0');
+        }
+
+        return result;
     }
 
-    # endregion
+    private static string ToLongString(double input)
+    {
+        return ProcessScientificString(input.ToString("R", NumberFormatInfo.InvariantInfo));
+    }
+
+    private static string ToLongString(float input)
+    {
+        return ProcessScientificString(input.ToString("R", NumberFormatInfo.InvariantInfo));
+    }
+
+    private static string GetZeros(int zeroCount)
+    {
+        return new string('0', Math.Abs(zeroCount));
+    }
+
+    public static BigFloat ParseBigFloat(string p0)
+    {
+        p0 = p0.Replace(',', '.');
+        return Parse(p0);
+    }
 }

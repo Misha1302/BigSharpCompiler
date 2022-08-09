@@ -11,7 +11,7 @@ public static class Lexer
 
     private static readonly IReadOnlyList<string> MathOperands = new[]
     {
-        "**",
+        "^",
         "-",
         "+",
         "/",

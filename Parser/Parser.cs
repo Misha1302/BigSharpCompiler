@@ -162,15 +162,16 @@ public static class Parser
     {
         List<string> methods = new();
         for (var i = 2; i < tokens.Count; i++)
-            if (tokens[i - 2].Kind is Kind.Dynamic or Kind.Void && tokens[i].Kind is Kind.Unknown or Kind.Variable &&
-                tokens[i + 1].Kind == Kind.OpenParentheses)
+            if (tokens[i - 2].Kind is Kind.Dynamic or Kind.NewVoid && (tokens[i + 1].Kind == Kind.OpenParentheses ||
+                                                                       tokens[i + 2].Kind == Kind.OpenParentheses))
             {
                 tokens[i] = new Token(tokens[i].Text, Kind.Method);
                 methods.Add(tokens[i].Text);
             }
 
         for (var i = 2; i < tokens.Count; i++)
-            if (tokens[i - 2].Kind == Kind.Call && tokens[i + 1].Kind == Kind.OpenParentheses)
+            if (tokens[i - 2].Kind == Kind.Call && (tokens[i + 1].Kind == Kind.OpenParentheses ||
+                                                    tokens[i + 2].Kind == Kind.OpenParentheses))
             {
                 if (methods.Contains(tokens[i].Text))
                     tokens[i] = new Token(tokens[i].Text, Kind.Method);
@@ -179,6 +180,10 @@ public static class Parser
                 i += 2;
             }
 
+
+        var beforeName = "_" + Math.Abs(DateTimeOffset.Now.GetHashCode());
+        foreach (var token in tokens.Where(token => token.Kind is Kind.Method or Kind.Void))
+            token.Text = beforeName + token.Text;
 
         return tokens;
     }

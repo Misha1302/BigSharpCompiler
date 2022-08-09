@@ -1,4 +1,9 @@
-void Foo(){
-var q = 0
-}
-WriteLine(call Foo())
+Stopwatch stopwatch = new();
+stopwatch.Start();
+
+
+WriteLine("Привет")
+
+
+stopwatch.Stop();
+Console.WriteLine(stopwatch.ElapsedMilliseconds);

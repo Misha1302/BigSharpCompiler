@@ -219,6 +219,9 @@
               "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj": {
                 "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj"
               },
+              "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Test\\Test.csproj": {
+                "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Test\\Test.csproj"
+              },
               "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj": {
                 "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\XmlReaderDictionary\\XmlReaderDictionary.csproj"
               }
@@ -234,6 +237,12 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.CodeAnalysis.Common": {
+              "target": "Package",
+              "version": "[4.3.0-3.final, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -495,6 +504,60 @@
         "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Preprocessor\\Preprocessor.csproj",
         "packagesPath": "C:\\Users\\Михаил\\.nuget\\packages\\",
         "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Preprocessor\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Михаил\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Test\\Test.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Test\\Test.csproj",
+        "projectName": "Test",
+        "projectPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Test\\Test.csproj",
+        "packagesPath": "C:\\Users\\Михаил\\.nuget\\packages\\",
+        "outputPath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\Test\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Михаил\\AppData\\Roaming\\NuGet\\NuGet.Config",

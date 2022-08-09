@@ -1,8 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "GN2N75IYW19fcayh0W7NApJUqXO7L0SGclSkLuCBkyYJVos0KGQAtq1kYRM+LoKu0Xf0WdmFKGojTzadtK31GA==",
+  "dgSpecHash": "jW5+xIpr24VQBjDGEa/9Bu81Auz0Oer2uhOb+JkuJc7LqE9QwEM0aIoB5BWIEJmc+9M/BYBd0fiD5j30R+UYcw==",
   "success": true,
   "projectFilePath": "D:\\DRIVE\\Programming\\ProgrammingLanguages\\CSharp\\BigSharpCompiler\\BigSharpCompiler\\BigSharpCompiler\\BigSharpCompiler.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Михаил\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",
+    "C:\\Users\\Михаил\\.nuget\\packages\\microsoft.codeanalysis.common\\4.3.0-3.final\\microsoft.codeanalysis.common.4.3.0-3.final.nupkg.sha512",
+    "C:\\Users\\Михаил\\.nuget\\packages\\system.collections.immutable\\5.0.0\\system.collections.immutable.5.0.0.nupkg.sha512",
+    "C:\\Users\\Михаил\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
+    "C:\\Users\\Михаил\\.nuget\\packages\\system.reflection.metadata\\5.0.0\\system.reflection.metadata.5.0.0.nupkg.sha512",
+    "C:\\Users\\Михаил\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "C:\\Users\\Михаил\\.nuget\\packages\\system.text.encoding.codepages\\6.0.0\\system.text.encoding.codepages.6.0.0.nupkg.sha512",
+    "C:\\Users\\Михаил\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512"
+  ],
   "logs": []
 }

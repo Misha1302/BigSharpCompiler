@@ -15,8 +15,11 @@ public static class Preprocessor
         for (var i = 0; i < splitCode.Length; i++)
             if (i % 2 == 0)
             {
-                splitCode[i] = Regex.Replace(splitCode[i], "\\s-\\n", " ");
-                
+                var replaceNewString = "\n".GetHashCode().ToString();
+                splitCode[i] = Regex.Replace(splitCode[i], "\\n", replaceNewString);
+                splitCode[i] = Regex.Replace(splitCode[i], "\\s+", " ");
+                splitCode[i] = Regex.Replace(splitCode[i], replaceNewString, "\r\n");
+
                 splitCode[i] = Regex.Replace(splitCode[i],
                     "(?<!(((enum(.| |\r\n|\n)*\n\\{(.|\\n|\\r)*(?!(\\}))))|((if|elif|else)(| )\\((.)*\\))(\t| |)|\\,|\\{|\\(( |\\t)*))\r\n(?!(( |\\t)*(\\{|else|elif)))",
                     ";\n", RegexOptions.Multiline);
@@ -28,6 +31,8 @@ public static class Preprocessor
                 splitCode[i] = Regex.Replace(splitCode[i], "=(| )list(| ){", " = new List<dynamic> {");
                 splitCode[i] = Regex.Replace(splitCode[i], "=(| )dict(| ){", " = new Dictionary<dynamic, dynamic> {");
 
+                splitCode[i] = Regex.Replace(splitCode[i], "\\*\\*", "^");
+                
                 splitCode[i] = Regex.Replace(splitCode[i], "f(?!(.){1,})", "$");
             }
             else

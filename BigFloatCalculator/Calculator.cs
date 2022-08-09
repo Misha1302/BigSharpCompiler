@@ -157,6 +157,7 @@ public static class Calculator
                 x -= 2;
             }
 
+        if (res.Count > 1) throw new Exception("Expression is not correct");
         return BigFloat.ParseBigFloat(res[0]);
     }
 

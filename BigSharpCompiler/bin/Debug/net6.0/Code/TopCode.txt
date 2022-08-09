@@ -1,3 +1,4 @@
+dynamic GetLen(dynamic dyn)=>dyn.ToString().Length;
 void Sleep(BigFloat seconds)
     {
         if (seconds == 0) return;
@@ -37,7 +38,7 @@ void Sleep(BigFloat seconds)
             }
             default:
             {
-                Console.WriteLine(obj ?? "");
+            	Console.WriteLine(obj.ToString() ?? "");
                 break;
             }
         }

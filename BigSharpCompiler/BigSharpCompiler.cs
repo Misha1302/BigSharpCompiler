@@ -10,7 +10,7 @@ public static class BigSharpCompiler
     {
         Thread.CurrentThread.Priority = ThreadPriority.Highest;
         Start(args.Length == 0 ? "Settings.xml" : args[0]);
-        
+
         // try
         // {
         //     Start(args.Length == 0 ? "Settings.xml" : args[0]);

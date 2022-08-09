@@ -28,7 +28,6 @@ public struct BigFloat
     private const int POS_INF = -1;
     private const int NEG_INF = -2;
     private const int NAN = -3;
-    private const int DIV_MAX_ADD = 50;
 
     private readonly BigInteger _value;
     private int _radix;
@@ -48,20 +47,7 @@ public struct BigFloat
 
     public BigFloat(string s)
     {
-        s = s.Replace(',', '.');
-        s = ProcessScientificString(s);
-        if (!s.Contains('.'))
-        {
-            _value = BigInteger.Parse(s);
-            _radix = 0;
-        }
-        else
-        {
-            var split = s.Split('.');
-            if (split[1].Length > _divMax) split[1] = split[1][.._divMax];
-            _value = BigInteger.Parse(split[0] + split[1]);
-            _radix = split[1].Length;
-        }
+        this = ParseBigFloat(s);
     }
 
     public BigFloat(params byte[] data)
@@ -199,46 +185,54 @@ public struct BigFloat
 
     public BigFloat Reciprocal => One / this;
 
-    public static BigFloat Round(BigFloat val)
+    public static BigFloat Round(BigFloat value)
     {
-        if (val._radix <= 0)
-            return val;
-        var s = val._value / BigInteger.Pow(10, val._radix - 1);
-        if (s > 0)
-        {
-            if (s % 10 >= 5)
-                return s / 10 + 1;
-        }
-        else if (s % 10 <= -5)
-        {
-            return s / 10 - 1;
-        }
-
-        return s / 10;
+        var valueStr = value.ToString(false).Replace('.', ',');
+        var firstDigitInFractionalPart =
+            valueStr.IndexOf(',') != -1 ? Convert.ToInt32(valueStr.Split(',')[1][0].ToString()) : 0;
+        if (firstDigitInFractionalPart < 5) return Truncate(value);
+        return value < 0 ? Truncate(value) - 1 : Truncate(value) + 1;
     }
 
-    public static BigFloat Round(BigFloat val, int radix)
+    public override string? ToString()
     {
-        if (val._radix <= 0)
-            return val;
-        if (val._radix > radix)
-        {
-            var s = val._value / BigInteger.Pow(10, val._radix - radix - 1);
-            if (s > 0)
-            {
-                if (s % 10 >= 5)
-                    return new BigFloat(s / 10 + 1, radix);
-            }
-            else if (s % 10 <= -5)
-            {
-                return new BigFloat(s / 10 - 1, radix);
-            }
+        return ToString();
+    }
 
-            return new BigFloat(s / 10, radix);
+    public string ToString(bool round = true)
+    {
+        switch (_radix)
+        {
+            case NAN:
+                return "NaN";
+            case POS_INF:
+                return "Infinity";
+            case NEG_INF:
+                return "-Infinity";
+            case 0:
+                return _value.ToString("R");
+            default:
+                var m = this < Zero;
+                var str = BigInteger.Abs(_value).ToString("R").PadLeft(_radix + 1, '0');
+                str = str.Insert(str.Length - _radix, ".");
+                if (round) str = Round(ParseBigFloat(str), _divMax - 15).ToString(false);
+                return m ? "-" + str : str;
+        }
+    }
+
+
+    public static BigFloat Round(BigFloat value, int radix)
+    {
+        if (radix > -1)
+        {
+            var multiplier = ParseBigFloat('1' + new string('0', radix - 1));
+            return Round(value * multiplier) / multiplier;
         }
 
-        return val;
+        var divider = ParseBigFloat('1' + new string('0', -radix));
+        return Round(value / divider) * divider;
     }
+
 
     public static BigFloat Truncate(BigFloat val)
     {
@@ -329,39 +323,11 @@ public struct BigFloat
         return Round(iter, _expMax);
     }
 
-    private static BigFloat PowBySquaring(BigFloat x, BigInteger n)
-    {
-        if (n == 0) return 1;
-        if (n < 0)
-        {
-            x = x.Reciprocal;
-            n = -n;
-        }
-
-        BigFloat y = 1;
-        while (n > 1)
-            if (n.IsEven)
-            {
-                x *= x;
-                n /= 2;
-            }
-            else
-            {
-                y *= x;
-                x *= x;
-                n = (n - 1) / 2;
-            }
-
-        return x * y;
-    }
-
     private static BigFloat IntPow(BigFloat number, BigFloat degree)
     {
-        DivMax += DIV_MAX_ADD;
         var result = number;
         for (var i = 1; i < Abs(degree); i++) result *= number;
         if (degree < 0) result = 1 / result;
-        DivMax -= DIV_MAX_ADD;
         return result;
     }
 
@@ -436,7 +402,7 @@ public struct BigFloat
     }
 
 
-    // TODO: sin, cos, tan, sinh, cosh, tanh, asin, acos, atan, atan2
+    // TODO: sin, cos, tan, sinh, cosh, tanh, asin, acos, atan, atan2, log
 
     public static BigFloat Sqrt(BigFloat val)
     {
@@ -536,14 +502,6 @@ public struct BigFloat
         return a > b ? a : b;
     }
 
-    public static BigFloat Log(BigFloat a, BigFloat x)
-    {
-        // Log5(25)=5*5=25
-        //TODO: find log
-        //BigFloat left, right, middle;
-        return 0;
-    }
-
     public static BigFloat Log10(BigFloat val)
     {
         return StrangeLog(val) / Ln10;
@@ -634,7 +592,7 @@ public struct BigFloat
             }
 
         var returnValue = new BigFloat(a._value * b._value, a._radix + b._radix);
-        return Round(returnValue, _divMax - 3);
+        return returnValue;
     }
 
     public static BigFloat operator /(BigFloat a, BigFloat b)
@@ -686,7 +644,7 @@ public struct BigFloat
         }
 
         var returnValue = new BigFloat(result, radix);
-        return Round(returnValue, _divMax - 3);
+        return returnValue;
     }
 
     public static BigFloat operator %(BigFloat a, BigFloat b)
@@ -714,7 +672,7 @@ public struct BigFloat
         }
 
         var returnValue = new BigFloat(valA % valB, radix);
-        return Round(returnValue, _divMax - 3);
+        return returnValue;
     }
 
     public static BigFloat operator &(BigFloat a, BigFloat b)
@@ -801,19 +759,15 @@ public struct BigFloat
     {
         if (number < 0 && degree % 2 == 0) throw new Exception("There is no even root of a negative number");
 
-        DivMax += DIV_MAX_ADD;
         if (degree % 1 == 0)
         {
             var value = degree > 0 ? GetNaturalRoot(number, degree) : 1 / GetNaturalRoot(number, Abs(degree));
-            DivMax -= DIV_MAX_ADD;
             return value;
         }
 
-        // if degree isn't integer
 
         var (numerator, denominator) = GetTheSmallestFraction(degree);
 
-        DivMax -= DIV_MAX_ADD;
         var result = Pow(number, denominator / numerator, false);
 
         return result;
@@ -1132,28 +1086,6 @@ public struct BigFloat
     public static readonly BigFloat Ln10 = new(0x64, 0x00, 0x00, 0x00, 0x88, 0x51, 0x81, 0x0A, 0xA0, 0x03,
         0xDD, 0x3D, 0xF0, 0xAD, 0x42, 0x3C, 0x70, 0xDD, 0x55, 0xFC, 0x52, 0xFB, 0xEB, 0xA3, 0x3A, 0x04, 0x25, 0x34,
         0x2A, 0x19, 0x13, 0x65, 0x02, 0x2A, 0x8C, 0xA5, 0xD8, 0xA8, 0x00, 0xC7, 0xF1, 0x94, 0x4B, 0xF5, 0x1B, 0x2A);
-
-    public override string ToString()
-    {
-        switch (_radix)
-        {
-            case NAN:
-                return "NaN";
-            case POS_INF:
-                return "Infinity";
-            case NEG_INF:
-                return "-Infinity";
-            case 0:
-                return _value.ToString("R");
-            default:
-                var m = this < Zero;
-                var str = BigInteger.Abs(_value).ToString("R").PadLeft(_radix + 1, '0');
-                str = str.Insert(str.Length - _radix, ".");
-                if (m)
-                    return "-" + str;
-                return str;
-        }
-    }
 
     public static BigFloat Parse(string s)
     {
